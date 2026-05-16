@@ -1,4 +1,4 @@
-import { useEffect, lazy, Suspense } from 'react'
+import { useEffect, useState, lazy, Suspense } from 'react'
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom'
 import { Toaster } from '@/components/ui/toaster'
 import { Toaster as Sonner } from '@/components/ui/sonner'
@@ -7,6 +7,8 @@ import Index from './pages/Index'
 import NotFound from './pages/NotFound'
 import { Layout } from './components/Layout'
 import { BrokerLayout } from './components/broker/BrokerLayout'
+import { ErrorBoundary } from './components/ErrorBoundary'
+import { AppProviders } from './providers/AppProviders'
 
 const Login = lazy(() => import('./pages/auth/Login'))
 const BrokerDashboard = lazy(() => import('./pages/broker/Dashboard'))
@@ -23,7 +25,12 @@ const PageLoader = () => (
 )
 
 const App = () => {
+  const [isReady, setIsReady] = useState(false)
+
   useEffect(() => {
+    // Prevent empty white screen gap during boot by forcing a fast state resolution
+    const timer = setTimeout(() => setIsReady(true), 150)
+
     if ('serviceWorker' in navigator) {
       window.addEventListener('load', () => {
         navigator.serviceWorker.register('/sw.js').catch((err) => {
@@ -31,57 +38,66 @@ const App = () => {
         })
       })
     }
+    return () => clearTimeout(timer)
   }, [])
 
+  if (!isReady) {
+    return <PageLoader />
+  }
+
   return (
-    <BrowserRouter future={{ v7_startTransition: false, v7_relativeSplatPath: false }}>
-      <TooltipProvider>
-        <Toaster />
-        <Sonner />
-        <Suspense fallback={<PageLoader />}>
-          <Routes>
-            <Route element={<Layout />}>
-              <Route path="/tv" element={<Index />} />
-            </Route>
+    <ErrorBoundary>
+      <AppProviders>
+        <BrowserRouter future={{ v7_startTransition: true, v7_relativeSplatPath: true }}>
+          <TooltipProvider>
+            <Toaster />
+            <Sonner />
+            <Suspense fallback={<PageLoader />}>
+              <Routes>
+                <Route element={<Layout />}>
+                  <Route path="/tv" element={<Index />} />
+                </Route>
 
-            <Route path="/login" element={<Login />} />
+                <Route path="/login" element={<Login />} />
 
-            <Route path="/" element={<BrokerLayout />}>
-              <Route index element={<BrokerDashboard />} />
-              <Route
-                path="historico"
-                element={
-                  <div className="flex h-[50vh] items-center justify-center text-slate-500 font-bold text-xl animate-fade-in-up text-center px-4">
-                    Histórico detalhado em desenvolvimento...
-                  </div>
-                }
-              />
-              <Route
-                path="metas"
-                element={
-                  <div className="flex h-[50vh] items-center justify-center text-slate-500 font-bold text-xl animate-fade-in-up text-center px-4">
-                    Página de metas em desenvolvimento...
-                  </div>
-                }
-              />
-              <Route path="gamificacao" element={<BrokerGamification />} />
-              <Route
-                path="configuracoes"
-                element={
-                  <div className="flex h-[50vh] items-center justify-center text-slate-500 font-bold text-xl animate-fade-in-up text-center px-4">
-                    Configurações do perfil em desenvolvimento...
-                  </div>
-                }
-              />
-            </Route>
+                <Route path="/" element={<BrokerLayout />}>
+                  <Route index element={<BrokerDashboard />} />
+                  <Route
+                    path="historico"
+                    element={
+                      <div className="flex h-[50vh] items-center justify-center text-slate-500 font-bold text-xl animate-fade-in-up text-center px-4">
+                        Histórico detalhado em desenvolvimento...
+                      </div>
+                    }
+                  />
+                  <Route
+                    path="metas"
+                    element={
+                      <div className="flex h-[50vh] items-center justify-center text-slate-500 font-bold text-xl animate-fade-in-up text-center px-4">
+                        Página de metas em desenvolvimento...
+                      </div>
+                    }
+                  />
+                  <Route path="gamificacao" element={<BrokerGamification />} />
+                  <Route
+                    path="configuracoes"
+                    element={
+                      <div className="flex h-[50vh] items-center justify-center text-slate-500 font-bold text-xl animate-fade-in-up text-center px-4">
+                        Configurações do perfil em desenvolvimento...
+                      </div>
+                    }
+                  />
+                </Route>
 
-            <Route path="/dashboard/*" element={<Navigate to="/" replace />} />
+                <Route path="/dashboard/*" element={<Navigate to="/" replace />} />
 
-            <Route path="*" element={<NotFound />} />
-          </Routes>
-        </Suspense>
-      </TooltipProvider>
-    </BrowserRouter>
+                <Route path="*" element={<NotFound />} />
+              </Routes>
+            </Suspense>
+          </TooltipProvider>
+        </BrowserRouter>
+      </AppProviders>
+    </ErrorBoundary>
   )
 }
 
