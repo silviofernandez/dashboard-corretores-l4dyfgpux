@@ -9,6 +9,13 @@ import Layout from './components/Layout'
 import Login from './pages/auth/Login'
 import { BrokerLayout } from './components/broker/BrokerLayout'
 import BrokerDashboard from './pages/broker/Dashboard'
+import { AdminLayout } from './pages/admin/AdminLayout'
+import AdminDashboard from './pages/admin/Dashboard'
+import AdminBrokers from './pages/admin/Brokers'
+import AdminIntegrations from './pages/admin/Integrations'
+import AdminAlerts from './pages/admin/Alerts'
+import AdminReports from './pages/admin/Reports'
+import AdminSettings from './pages/admin/Settings'
 
 // ONLY IMPORT AND RENDER WORKING PAGES, NEVER ADD PLACEHOLDER COMPONENTS OR PAGES IN THIS FILE
 // AVOID REMOVING ANY CONTEXT PROVIDERS FROM THIS FILE (e.g. TooltipProvider, Toaster, Sonner)
@@ -21,6 +28,16 @@ const App = () => (
       <Routes>
         <Route element={<Layout />}>
           <Route path="/" element={<Index />} />
+        </Route>
+
+        {/* Admin App Routes */}
+        <Route path="/admin" element={<AdminLayout />}>
+          <Route index element={<AdminDashboard />} />
+          <Route path="corretores" element={<AdminBrokers />} />
+          <Route path="integracoes" element={<AdminIntegrations />} />
+          <Route path="alertas" element={<AdminAlerts />} />
+          <Route path="relatorios" element={<AdminReports />} />
+          <Route path="configuracoes" element={<AdminSettings />} />
         </Route>
 
         {/* Broker App Routes */}
