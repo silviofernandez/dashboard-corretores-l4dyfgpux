@@ -4,6 +4,13 @@ import { cn } from '@/lib/utils'
 import { SwipeableItem } from '@/components/ui/swipeable-item'
 import { PullToRefresh } from '@/components/ui/pull-to-refresh'
 import { useState, useRef, useCallback } from 'react'
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogDescription,
+} from '@/components/ui/dialog'
 
 export type BrokerStatus = 'Acima' | 'Esperado' | 'Abaixo'
 export type BrokerPrivilege = '3x1' | '2x1' | 'Padrão'
@@ -42,6 +49,7 @@ export function RankingList({ brokers: initialBrokers }: { brokers: Broker[] }) 
   const [brokers, setBrokers] = useState(initialBrokers)
   const [isRefreshing, setIsRefreshing] = useState(false)
   const [hasMore, setHasMore] = useState(true)
+  const [selectedBroker, setSelectedBroker] = useState<Broker | null>(null)
 
   const observer = useRef<IntersectionObserver | null>(null)
 
@@ -139,6 +147,7 @@ export function RankingList({ brokers: initialBrokers }: { brokers: Broker[] }) 
             >
               <div
                 ref={idx === brokers.length - 1 ? lastElementRef : null}
+                onClick={() => setSelectedBroker(broker)}
                 role="listitem"
                 tabIndex={0}
                 aria-label={`${idx + 1}º lugar, ${broker.name}, ${broker.sales} vendas`}
@@ -263,6 +272,47 @@ export function RankingList({ brokers: initialBrokers }: { brokers: Broker[] }) 
           )}
         </div>
       </PullToRefresh>
+
+      <Dialog open={!!selectedBroker} onOpenChange={(open) => !open && setSelectedBroker(null)}>
+        <DialogContent className="sm:max-w-md bg-slate-900 text-white border-white/10 rounded-2xl">
+          <DialogHeader>
+            <DialogTitle className="text-xl font-black text-white">Detalhes do Ranking</DialogTitle>
+            <DialogDescription className="text-slate-400">
+              Como a pontuação de {selectedBroker?.name} foi calculada.
+            </DialogDescription>
+          </DialogHeader>
+          {selectedBroker && (
+            <div className="space-y-4 py-4">
+              <div className="flex justify-between items-center bg-white/5 p-3 rounded-lg border border-white/10">
+                <span className="font-bold text-slate-300">VGV Realizado</span>
+                <span className="font-mono font-black text-emerald-400">
+                  {formatCurrency(selectedBroker.vgv)}
+                </span>
+              </div>
+              <div className="flex justify-between items-center bg-white/5 p-3 rounded-lg border border-white/10">
+                <span className="font-bold text-slate-300">Vendas</span>
+                <span className="font-mono font-black text-blue-400">
+                  {selectedBroker.sales} unidades
+                </span>
+              </div>
+              <div className="flex justify-between items-center bg-white/5 p-3 rounded-lg border border-white/10">
+                <span className="font-bold text-slate-300">Engajamento CRM</span>
+                <span className="font-mono font-black text-purple-400">94%</span>
+              </div>
+              <div className="mt-4 pt-4 border-t border-white/10">
+                <div className="text-xs text-slate-500 uppercase tracking-wider mb-2 font-bold">
+                  Fórmula do Motor
+                </div>
+                <p className="text-sm text-slate-400">
+                  A pontuação final considera 60% VGV, 25% volume de vendas e 15% de engajamento no
+                  CRM. O status "{selectedBroker.status}" indica a projeção em relação à meta
+                  mensal.
+                </p>
+              </div>
+            </div>
+          )}
+        </DialogContent>
+      </Dialog>
     </div>
   )
 }
