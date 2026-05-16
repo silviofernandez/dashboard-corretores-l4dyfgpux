@@ -3,7 +3,11 @@ import { LevelProgress } from '@/components/gamification/LevelProgress'
 import { SocialFeed } from '@/components/gamification/SocialFeed'
 import { ErrorBoundary } from '@/components/ErrorBoundary'
 
+import { useAuth } from '@/providers/AppProviders'
+
 export default function BrokerDashboard() {
+  const { user } = useAuth() || {}
+
   return (
     <ErrorBoundary>
       <div className="p-4 md:p-8 max-w-7xl mx-auto space-y-6 md:space-y-8 animate-fade-in-up">
@@ -11,7 +15,7 @@ export default function BrokerDashboard() {
           <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
             <div>
               <h2 className="text-2xl md:text-3xl font-black text-slate-800 tracking-tight">
-                Olá, Ana Paula 👋
+                Olá, {user?.name || 'Corretor'} 👋
               </h2>
               <p className="text-slate-500 font-medium mt-1">Seu resumo de performance hoje.</p>
             </div>

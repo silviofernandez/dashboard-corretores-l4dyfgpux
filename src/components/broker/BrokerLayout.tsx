@@ -16,7 +16,7 @@ export function BrokerLayout() {
   ]
 
   return (
-    <div className="min-h-screen bg-slate-50 flex flex-col md:flex-row font-sans">
+    <div className="min-h-screen bg-slate-50 flex flex-col md:flex-row font-sans w-full overflow-hidden">
       <aside className="hidden md:flex flex-col w-64 bg-white border-r border-slate-200 h-screen sticky top-0 shrink-0 shadow-sm z-10">
         <div className="p-6 border-b border-slate-100 flex items-center gap-3">
           <div className="bg-blue-600 text-white p-2 rounded-xl shadow-sm">
@@ -52,10 +52,12 @@ export function BrokerLayout() {
         </nav>
       </aside>
 
-      <main className="flex-1 pb-20 md:pb-0 overflow-x-hidden min-h-screen relative">
-        <ErrorBoundary>
-          <Outlet />
-        </ErrorBoundary>
+      <main className="flex-1 pb-20 md:pb-0 overflow-y-auto overflow-x-hidden h-screen relative w-full">
+        <div className="w-full max-w-full">
+          <ErrorBoundary>
+            <Outlet />
+          </ErrorBoundary>
+        </div>
       </main>
 
       <nav className="md:hidden fixed bottom-0 w-full bg-white border-t border-slate-200 flex justify-around p-2 z-50 safe-area-bottom shadow-[0_-4px_20px_rgba(0,0,0,0.05)]">

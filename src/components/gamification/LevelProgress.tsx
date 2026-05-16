@@ -1,5 +1,6 @@
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Progress } from '@/components/ui/progress'
-import { Award } from 'lucide-react'
+import { Trophy, Star } from 'lucide-react'
 
 interface LevelProgressProps {
   currentLevel: number
@@ -12,34 +13,43 @@ export function LevelProgress({
   currentPoints,
   nextLevelPoints,
 }: LevelProgressProps) {
-  const percentage = Math.min(100, Math.max(0, (currentPoints / nextLevelPoints) * 100))
+  const progress = Math.min(100, Math.max(0, (currentPoints / nextLevelPoints) * 100))
 
   return (
-    <div className="bg-white p-6 rounded-2xl border border-slate-100 shadow-sm flex flex-col md:flex-row items-center gap-6">
-      <div className="bg-gradient-to-br from-blue-500 to-indigo-600 p-4 rounded-full shadow-lg shadow-blue-500/20 text-white shrink-0">
-        <Award className="w-10 h-10" />
-      </div>
-      <div className="flex-1 w-full text-center md:text-left">
-        <div className="flex flex-col md:flex-row md:items-center justify-between mb-4 gap-2">
-          <div>
-            <span className="text-xs font-bold text-slate-400 uppercase tracking-wider block mb-1">
-              Status Atual
-            </span>
-            <h3 className="text-2xl font-black text-slate-800 leading-none">
-              Nível {currentLevel}
-            </h3>
+    <Card className="border-slate-100 shadow-sm">
+      <CardHeader>
+        <CardTitle className="flex items-center gap-2 text-lg">
+          <Trophy className="w-5 h-5 text-amber-500" />
+          Seu Progresso
+        </CardTitle>
+      </CardHeader>
+      <CardContent>
+        <div className="flex items-center justify-between mb-4">
+          <div className="flex items-center gap-3">
+            <div className="w-12 h-12 rounded-full bg-blue-100 flex items-center justify-center border-4 border-white shadow-sm">
+              <Star className="w-6 h-6 text-blue-600 fill-blue-600" />
+            </div>
+            <div>
+              <p className="text-sm font-bold text-slate-500">Nível Atual</p>
+              <p className="text-2xl font-black text-slate-800">Nível {currentLevel}</p>
+            </div>
           </div>
-          <div className="md:text-right">
-            <span className="text-xs font-bold text-slate-400 uppercase tracking-wider block mb-1">
-              Para o Nível {currentLevel + 1}
-            </span>
-            <p className="text-lg font-black text-blue-600 leading-none">
-              {currentPoints} / {nextLevelPoints} pts
+          <div className="text-right">
+            <p className="text-sm font-bold text-slate-500">Próximo Nível</p>
+            <p className="text-xl font-black text-blue-600">
+              {nextLevelPoints.toLocaleString()} pts
             </p>
           </div>
         </div>
-        <Progress value={percentage} className="h-3 bg-slate-100" />
-      </div>
-    </div>
+
+        <div className="space-y-2">
+          <div className="flex justify-between text-sm font-bold text-slate-600">
+            <span>{currentPoints.toLocaleString()} pts</span>
+            <span>Faltam {(nextLevelPoints - currentPoints).toLocaleString()} pts</span>
+          </div>
+          <Progress value={progress} className="h-3 bg-slate-100" />
+        </div>
+      </CardContent>
+    </Card>
   )
 }
