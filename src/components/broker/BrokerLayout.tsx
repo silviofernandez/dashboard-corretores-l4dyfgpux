@@ -1,6 +1,7 @@
 import { Outlet, Link, useLocation } from 'react-router-dom'
 import { LayoutDashboard, Target, Trophy, Settings, History, MonitorPlay } from 'lucide-react'
 import { cn } from '@/lib/utils'
+import { ErrorBoundary } from '@/components/ErrorBoundary'
 
 export function BrokerLayout() {
   const location = useLocation()
@@ -52,7 +53,9 @@ export function BrokerLayout() {
       </aside>
 
       <main className="flex-1 pb-20 md:pb-0 overflow-x-hidden min-h-screen">
-        <Outlet />
+        <ErrorBoundary>
+          <Outlet />
+        </ErrorBoundary>
       </main>
 
       <nav className="md:hidden fixed bottom-0 w-full bg-white border-t border-slate-200 flex justify-around p-2 z-50 safe-area-bottom shadow-[0_-4px_20px_rgba(0,0,0,0.05)]">

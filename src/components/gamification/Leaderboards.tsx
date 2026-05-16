@@ -10,123 +10,352 @@ import {
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
 import { Trophy, ArrowUp, ArrowDown, Minus, Crown } from 'lucide-react'
 
-const data = {
-  sales: [
-    {
-      id: 1,
-      name: 'Ricardo Melo',
-      pts: 12500,
-      avatar: 'https://img.usecurling.com/ppl/thumbnail?gender=male&seed=1',
-      trend: 'up',
-    },
-    {
-      id: 2,
-      name: 'Ana Paula Silva',
-      pts: 11200,
-      avatar: 'https://img.usecurling.com/ppl/thumbnail?gender=female&seed=1',
-      trend: 'down',
-    },
-    {
-      id: 3,
-      name: 'Juliana Costa',
-      pts: 9800,
-      avatar: 'https://img.usecurling.com/ppl/thumbnail?gender=female&seed=3',
-      trend: 'same',
-    },
-    {
-      id: 4,
-      name: 'Marcos Gomes',
-      pts: 8400,
-      avatar: 'https://img.usecurling.com/ppl/thumbnail?gender=male&seed=2',
-      trend: 'up',
-    },
-    {
-      id: 5,
-      name: 'Fernando Lima',
-      pts: 7100,
-      avatar: 'https://img.usecurling.com/ppl/thumbnail?gender=male&seed=5',
-      trend: 'down',
-    },
-  ],
-  engagement: [
-    {
-      id: 1,
-      name: 'Ana Paula Silva',
-      pts: 850,
-      avatar: 'https://img.usecurling.com/ppl/thumbnail?gender=female&seed=1',
-      trend: 'same',
-    },
-    {
-      id: 2,
-      name: 'Marcos Gomes',
-      pts: 720,
-      avatar: 'https://img.usecurling.com/ppl/thumbnail?gender=male&seed=2',
-      trend: 'up',
-    },
-    {
-      id: 3,
-      name: 'Ricardo Melo',
-      pts: 690,
-      avatar: 'https://img.usecurling.com/ppl/thumbnail?gender=male&seed=1',
-      trend: 'down',
-    },
-    {
-      id: 4,
-      name: 'Juliana Costa',
-      pts: 610,
-      avatar: 'https://img.usecurling.com/ppl/thumbnail?gender=female&seed=3',
-      trend: 'up',
-    },
-    {
-      id: 5,
-      name: 'Roberto Alves',
-      pts: 580,
-      avatar: 'https://img.usecurling.com/ppl/thumbnail?gender=male&seed=4',
-      trend: 'same',
-    },
-  ],
-  growth: [
-    {
-      id: 1,
-      name: 'Juliana Costa',
-      pts: '+45%',
-      avatar: 'https://img.usecurling.com/ppl/thumbnail?gender=female&seed=3',
-      trend: 'up',
-    },
-    {
-      id: 2,
-      name: 'Ricardo Melo',
-      pts: '+22%',
-      avatar: 'https://img.usecurling.com/ppl/thumbnail?gender=male&seed=1',
-      trend: 'up',
-    },
-    {
-      id: 3,
-      name: 'Marcos Gomes',
-      pts: '+12%',
-      avatar: 'https://img.usecurling.com/ppl/thumbnail?gender=male&seed=2',
-      trend: 'down',
-    },
-    {
-      id: 4,
-      name: 'Ana Paula Silva',
-      pts: '+5%',
-      avatar: 'https://img.usecurling.com/ppl/thumbnail?gender=female&seed=1',
-      trend: 'down',
-    },
-    {
-      id: 5,
-      name: 'Fernando Lima',
-      pts: '+2%',
-      avatar: 'https://img.usecurling.com/ppl/thumbnail?gender=male&seed=5',
-      trend: 'same',
-    },
-  ],
+const data: Record<string, Record<string, any[]>> = {
+  weekly: {
+    sales: [
+      {
+        id: 1,
+        name: 'Ricardo Melo',
+        pts: 3200,
+        avatar: 'https://img.usecurling.com/ppl/thumbnail?gender=male&seed=1',
+        trend: 'up',
+      },
+      {
+        id: 2,
+        name: 'Marcos Gomes',
+        pts: 2800,
+        avatar: 'https://img.usecurling.com/ppl/thumbnail?gender=male&seed=2',
+        trend: 'up',
+      },
+      {
+        id: 3,
+        name: 'Ana Paula Silva',
+        pts: 2500,
+        avatar: 'https://img.usecurling.com/ppl/thumbnail?gender=female&seed=1',
+        trend: 'down',
+      },
+      {
+        id: 4,
+        name: 'Juliana Costa',
+        pts: 1900,
+        avatar: 'https://img.usecurling.com/ppl/thumbnail?gender=female&seed=3',
+        trend: 'same',
+      },
+      {
+        id: 5,
+        name: 'Fernando Lima',
+        pts: 1500,
+        avatar: 'https://img.usecurling.com/ppl/thumbnail?gender=male&seed=5',
+        trend: 'down',
+      },
+    ],
+    engagement: [
+      {
+        id: 1,
+        name: 'Marcos Gomes',
+        pts: 250,
+        avatar: 'https://img.usecurling.com/ppl/thumbnail?gender=male&seed=2',
+        trend: 'up',
+      },
+      {
+        id: 2,
+        name: 'Ana Paula Silva',
+        pts: 210,
+        avatar: 'https://img.usecurling.com/ppl/thumbnail?gender=female&seed=1',
+        trend: 'same',
+      },
+      {
+        id: 3,
+        name: 'Juliana Costa',
+        pts: 180,
+        avatar: 'https://img.usecurling.com/ppl/thumbnail?gender=female&seed=3',
+        trend: 'up',
+      },
+      {
+        id: 4,
+        name: 'Ricardo Melo',
+        pts: 150,
+        avatar: 'https://img.usecurling.com/ppl/thumbnail?gender=male&seed=1',
+        trend: 'down',
+      },
+      {
+        id: 5,
+        name: 'Roberto Alves',
+        pts: 120,
+        avatar: 'https://img.usecurling.com/ppl/thumbnail?gender=male&seed=4',
+        trend: 'same',
+      },
+    ],
+    growth: [
+      {
+        id: 1,
+        name: 'Marcos Gomes',
+        pts: '+15%',
+        avatar: 'https://img.usecurling.com/ppl/thumbnail?gender=male&seed=2',
+        trend: 'up',
+      },
+      {
+        id: 2,
+        name: 'Juliana Costa',
+        pts: '+8%',
+        avatar: 'https://img.usecurling.com/ppl/thumbnail?gender=female&seed=3',
+        trend: 'up',
+      },
+      {
+        id: 3,
+        name: 'Ricardo Melo',
+        pts: '+5%',
+        avatar: 'https://img.usecurling.com/ppl/thumbnail?gender=male&seed=1',
+        trend: 'down',
+      },
+      {
+        id: 4,
+        name: 'Fernando Lima',
+        pts: '+2%',
+        avatar: 'https://img.usecurling.com/ppl/thumbnail?gender=male&seed=5',
+        trend: 'same',
+      },
+      {
+        id: 5,
+        name: 'Ana Paula Silva',
+        pts: '-1%',
+        avatar: 'https://img.usecurling.com/ppl/thumbnail?gender=female&seed=1',
+        trend: 'down',
+      },
+    ],
+  },
+  monthly: {
+    sales: [
+      {
+        id: 1,
+        name: 'Ricardo Melo',
+        pts: 12500,
+        avatar: 'https://img.usecurling.com/ppl/thumbnail?gender=male&seed=1',
+        trend: 'up',
+      },
+      {
+        id: 2,
+        name: 'Ana Paula Silva',
+        pts: 11200,
+        avatar: 'https://img.usecurling.com/ppl/thumbnail?gender=female&seed=1',
+        trend: 'down',
+      },
+      {
+        id: 3,
+        name: 'Juliana Costa',
+        pts: 9800,
+        avatar: 'https://img.usecurling.com/ppl/thumbnail?gender=female&seed=3',
+        trend: 'same',
+      },
+      {
+        id: 4,
+        name: 'Marcos Gomes',
+        pts: 8400,
+        avatar: 'https://img.usecurling.com/ppl/thumbnail?gender=male&seed=2',
+        trend: 'up',
+      },
+      {
+        id: 5,
+        name: 'Fernando Lima',
+        pts: 7100,
+        avatar: 'https://img.usecurling.com/ppl/thumbnail?gender=male&seed=5',
+        trend: 'down',
+      },
+    ],
+    engagement: [
+      {
+        id: 1,
+        name: 'Ana Paula Silva',
+        pts: 850,
+        avatar: 'https://img.usecurling.com/ppl/thumbnail?gender=female&seed=1',
+        trend: 'same',
+      },
+      {
+        id: 2,
+        name: 'Marcos Gomes',
+        pts: 720,
+        avatar: 'https://img.usecurling.com/ppl/thumbnail?gender=male&seed=2',
+        trend: 'up',
+      },
+      {
+        id: 3,
+        name: 'Ricardo Melo',
+        pts: 690,
+        avatar: 'https://img.usecurling.com/ppl/thumbnail?gender=male&seed=1',
+        trend: 'down',
+      },
+      {
+        id: 4,
+        name: 'Juliana Costa',
+        pts: 610,
+        avatar: 'https://img.usecurling.com/ppl/thumbnail?gender=female&seed=3',
+        trend: 'up',
+      },
+      {
+        id: 5,
+        name: 'Roberto Alves',
+        pts: 580,
+        avatar: 'https://img.usecurling.com/ppl/thumbnail?gender=male&seed=4',
+        trend: 'same',
+      },
+    ],
+    growth: [
+      {
+        id: 1,
+        name: 'Juliana Costa',
+        pts: '+45%',
+        avatar: 'https://img.usecurling.com/ppl/thumbnail?gender=female&seed=3',
+        trend: 'up',
+      },
+      {
+        id: 2,
+        name: 'Ricardo Melo',
+        pts: '+22%',
+        avatar: 'https://img.usecurling.com/ppl/thumbnail?gender=male&seed=1',
+        trend: 'up',
+      },
+      {
+        id: 3,
+        name: 'Marcos Gomes',
+        pts: '+12%',
+        avatar: 'https://img.usecurling.com/ppl/thumbnail?gender=male&seed=2',
+        trend: 'down',
+      },
+      {
+        id: 4,
+        name: 'Ana Paula Silva',
+        pts: '+5%',
+        avatar: 'https://img.usecurling.com/ppl/thumbnail?gender=female&seed=1',
+        trend: 'down',
+      },
+      {
+        id: 5,
+        name: 'Fernando Lima',
+        pts: '+2%',
+        avatar: 'https://img.usecurling.com/ppl/thumbnail?gender=male&seed=5',
+        trend: 'same',
+      },
+    ],
+  },
+  quarterly: {
+    sales: [
+      {
+        id: 1,
+        name: 'Ana Paula Silva',
+        pts: 35200,
+        avatar: 'https://img.usecurling.com/ppl/thumbnail?gender=female&seed=1',
+        trend: 'up',
+      },
+      {
+        id: 2,
+        name: 'Ricardo Melo',
+        pts: 34500,
+        avatar: 'https://img.usecurling.com/ppl/thumbnail?gender=male&seed=1',
+        trend: 'down',
+      },
+      {
+        id: 3,
+        name: 'Juliana Costa',
+        pts: 29800,
+        avatar: 'https://img.usecurling.com/ppl/thumbnail?gender=female&seed=3',
+        trend: 'up',
+      },
+      {
+        id: 4,
+        name: 'Fernando Lima',
+        pts: 25400,
+        avatar: 'https://img.usecurling.com/ppl/thumbnail?gender=male&seed=5',
+        trend: 'up',
+      },
+      {
+        id: 5,
+        name: 'Marcos Gomes',
+        pts: 22100,
+        avatar: 'https://img.usecurling.com/ppl/thumbnail?gender=male&seed=2',
+        trend: 'down',
+      },
+    ],
+    engagement: [
+      {
+        id: 1,
+        name: 'Ana Paula Silva',
+        pts: 2450,
+        avatar: 'https://img.usecurling.com/ppl/thumbnail?gender=female&seed=1',
+        trend: 'same',
+      },
+      {
+        id: 2,
+        name: 'Ricardo Melo',
+        pts: 2190,
+        avatar: 'https://img.usecurling.com/ppl/thumbnail?gender=male&seed=1',
+        trend: 'up',
+      },
+      {
+        id: 3,
+        name: 'Juliana Costa',
+        pts: 1910,
+        avatar: 'https://img.usecurling.com/ppl/thumbnail?gender=female&seed=3',
+        trend: 'down',
+      },
+      {
+        id: 4,
+        name: 'Marcos Gomes',
+        pts: 1820,
+        avatar: 'https://img.usecurling.com/ppl/thumbnail?gender=male&seed=2',
+        trend: 'up',
+      },
+      {
+        id: 5,
+        name: 'Roberto Alves',
+        pts: 1680,
+        avatar: 'https://img.usecurling.com/ppl/thumbnail?gender=male&seed=4',
+        trend: 'same',
+      },
+    ],
+    growth: [
+      {
+        id: 1,
+        name: 'Juliana Costa',
+        pts: '+85%',
+        avatar: 'https://img.usecurling.com/ppl/thumbnail?gender=female&seed=3',
+        trend: 'up',
+      },
+      {
+        id: 2,
+        name: 'Marcos Gomes',
+        pts: '+62%',
+        avatar: 'https://img.usecurling.com/ppl/thumbnail?gender=male&seed=2',
+        trend: 'up',
+      },
+      {
+        id: 3,
+        name: 'Ricardo Melo',
+        pts: '+42%',
+        avatar: 'https://img.usecurling.com/ppl/thumbnail?gender=male&seed=1',
+        trend: 'down',
+      },
+      {
+        id: 4,
+        name: 'Ana Paula Silva',
+        pts: '+25%',
+        avatar: 'https://img.usecurling.com/ppl/thumbnail?gender=female&seed=1',
+        trend: 'down',
+      },
+      {
+        id: 5,
+        name: 'Fernando Lima',
+        pts: '+12%',
+        avatar: 'https://img.usecurling.com/ppl/thumbnail?gender=male&seed=5',
+        trend: 'same',
+      },
+    ],
+  },
 }
-
 export function Leaderboards() {
   const [period, setPeriod] = useState('monthly')
-  const [category, setCategory] = useState<keyof typeof data>('sales')
+  const [category, setCategory] = useState<string>('sales')
+
+  const currentData = data[period]?.[category] || []
 
   return (
     <Card className="border-0 shadow-sm bg-white">
@@ -161,8 +390,8 @@ export function Leaderboards() {
       </CardHeader>
       <CardContent>
         <div className="space-y-3">
-          {data[category]?.length > 0 ? (
-            data[category].map((user, idx) => (
+          {currentData.length > 0 ? (
+            currentData.map((user, idx) => (
               <div
                 key={user.id}
                 className={`flex items-center gap-3 md:gap-4 p-3 rounded-xl transition-all ${

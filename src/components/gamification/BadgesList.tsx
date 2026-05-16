@@ -1,6 +1,9 @@
+import { useState } from 'react'
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card'
 import { Award, Zap, Target, UserCheck, Database, BrainCircuit } from 'lucide-react'
 import { Badge } from '@/components/ui/badge'
+import { useToast } from '@/hooks/use-toast'
+import { Confetti } from '@/components/ui/confetti'
 
 const badges = [
   {
@@ -66,8 +69,28 @@ const badges = [
 ]
 
 export function BadgesList() {
+  const { toast } = useToast()
+  const [showConfetti, setShowConfetti] = useState(false)
+
+  const handleBadgeClick = (badge: any) => {
+    if (badge.earned) {
+      setShowConfetti(false)
+      setTimeout(() => setShowConfetti(true), 10)
+      toast({
+        title: 'Conquista Celebrada! 🎉',
+        description: `Você visualizou sua medalha: ${badge.title}`,
+      })
+    } else {
+      toast({
+        title: 'Continue tentando! 💪',
+        description: `Faltam ${100 - (badge.progress || 0)}% para desbloquear ${badge.title}.`,
+      })
+    }
+  }
+
   return (
     <Card className="shadow-sm border-0 bg-white">
+      <Confetti active={showConfetti} />
       <CardHeader className="pb-4">
         <CardTitle>Suas Conquistas</CardTitle>
         <CardDescription>Colecione medalhas exclusivas e mostre sua expertise.</CardDescription>
@@ -80,10 +103,11 @@ export function BadgesList() {
               return (
                 <div
                   key={badge.id}
-                  className={`flex flex-col items-center text-center p-4 rounded-2xl border-2 transition-all duration-300 ${
+                  onClick={() => handleBadgeClick(badge)}
+                  className={`flex flex-col items-center text-center p-4 rounded-2xl border-2 transition-all duration-300 cursor-pointer ${
                     badge.earned
-                      ? 'border-slate-100 bg-white hover:border-amber-200 hover:shadow-md'
-                      : 'border-dashed border-slate-200 bg-slate-50 opacity-80 hover:opacity-100 grayscale hover:grayscale-0'
+                      ? 'border-slate-100 bg-white hover:border-amber-200 hover:shadow-md active:scale-95'
+                      : 'border-dashed border-slate-200 bg-slate-50 opacity-80 hover:opacity-100 grayscale hover:grayscale-0 active:scale-95'
                   }`}
                 >
                   <div

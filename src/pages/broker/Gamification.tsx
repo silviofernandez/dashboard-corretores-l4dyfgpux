@@ -1,6 +1,8 @@
 import { LevelProgress } from '@/components/gamification/LevelProgress'
 import { BadgesList } from '@/components/gamification/BadgesList'
 import { SocialFeed } from '@/components/gamification/SocialFeed'
+import { Challenges } from '@/components/gamification/Challenges'
+import { SuccessStories } from '@/components/gamification/SuccessStories'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { Trophy, Target, Award } from 'lucide-react'
 
@@ -19,55 +21,95 @@ export default function BrokerGamification() {
 
       <LevelProgress currentLevel={34} currentPoints={8450} nextLevelPoints={10000} />
 
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
-        <div className="bg-white p-4 rounded-xl border border-slate-100 shadow-sm flex items-center gap-4">
-          <div className="bg-blue-50 p-3 rounded-full">
-            <Trophy className="w-6 h-6 text-blue-500" />
+      <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-3 mb-6">
+        <div className="bg-white p-3 rounded-xl border border-slate-100 shadow-sm flex flex-col items-center justify-center text-center gap-2">
+          <div className="bg-blue-50 p-2 rounded-full">
+            <Trophy className="w-5 h-5 text-blue-500" />
           </div>
           <div>
-            <div className="text-sm font-bold text-slate-400">Venda</div>
-            <div className="text-lg font-black text-slate-800">100 pts / venda</div>
+            <div className="text-[10px] font-bold text-slate-400 uppercase">Venda</div>
+            <div className="text-sm font-black text-slate-800">100 pts</div>
           </div>
         </div>
-        <div className="bg-white p-4 rounded-xl border border-slate-100 shadow-sm flex items-center gap-4">
-          <div className="bg-emerald-50 p-3 rounded-full">
-            <Target className="w-6 h-6 text-emerald-500" />
+        <div className="bg-white p-3 rounded-xl border border-slate-100 shadow-sm flex flex-col items-center justify-center text-center gap-2">
+          <div className="bg-emerald-50 p-2 rounded-full">
+            <Target className="w-5 h-5 text-emerald-500" />
           </div>
           <div>
-            <div className="text-sm font-bold text-slate-400">VGV</div>
-            <div className="text-lg font-black text-slate-800">1 pt / 1k</div>
+            <div className="text-[10px] font-bold text-slate-400 uppercase">VGV (R$ 1k)</div>
+            <div className="text-sm font-black text-slate-800">1 pt</div>
           </div>
         </div>
-        <div className="bg-white p-4 rounded-xl border border-slate-100 shadow-sm flex items-center gap-4">
-          <div className="bg-purple-50 p-3 rounded-full">
-            <Award className="w-6 h-6 text-purple-500" />
+        <div className="bg-white p-3 rounded-xl border border-slate-100 shadow-sm flex flex-col items-center justify-center text-center gap-2">
+          <div className="bg-purple-50 p-2 rounded-full">
+            <Award className="w-5 h-5 text-purple-500" />
           </div>
           <div>
-            <div className="text-sm font-bold text-slate-400">Engajamento</div>
-            <div className="text-lg font-black text-slate-800">CRM: 50 pts / dia</div>
+            <div className="text-[10px] font-bold text-slate-400 uppercase">CRM Completo</div>
+            <div className="text-sm font-black text-slate-800">50 pts</div>
+          </div>
+        </div>
+        <div className="bg-white p-3 rounded-xl border border-slate-100 shadow-sm flex flex-col items-center justify-center text-center gap-2">
+          <div className="bg-orange-50 p-2 rounded-full">
+            <Award className="w-5 h-5 text-orange-500" />
+          </div>
+          <div>
+            <div className="text-[10px] font-bold text-slate-400 uppercase">Quiz Feito</div>
+            <div className="text-sm font-black text-slate-800">25 pts</div>
+          </div>
+        </div>
+        <div className="bg-white p-3 rounded-xl border border-slate-100 shadow-sm flex flex-col items-center justify-center text-center gap-2">
+          <div className="bg-indigo-50 p-2 rounded-full">
+            <Award className="w-5 h-5 text-indigo-500" />
+          </div>
+          <div>
+            <div className="text-[10px] font-bold text-slate-400 uppercase">Treinamento</div>
+            <div className="text-sm font-black text-slate-800">100 pts</div>
+          </div>
+        </div>
+        <div className="bg-white p-3 rounded-xl border border-slate-100 shadow-sm flex flex-col items-center justify-center text-center gap-2">
+          <div className="bg-rose-50 p-2 rounded-full">
+            <Award className="w-5 h-5 text-rose-500" />
+          </div>
+          <div>
+            <div className="text-[10px] font-bold text-slate-400 uppercase">Streak Diário</div>
+            <div className="text-sm font-black text-slate-800">Bônus XP</div>
           </div>
         </div>
       </div>
 
       <Tabs defaultValue="badges" className="w-full">
-        <TabsList className="grid w-full grid-cols-2 max-w-[400px] mb-6 bg-white border border-slate-200/60 p-1 h-12 shadow-sm rounded-xl">
+        <TabsList className="grid w-full grid-cols-3 max-w-[500px] mb-6 bg-white border border-slate-200/60 p-1 h-12 shadow-sm rounded-xl overflow-x-auto">
           <TabsTrigger
             value="badges"
-            className="font-bold rounded-lg data-[state=active]:bg-slate-100 data-[state=active]:text-blue-600 transition-all"
+            className="font-bold rounded-lg data-[state=active]:bg-slate-100 data-[state=active]:text-blue-600 transition-all text-xs md:text-sm"
           >
-            Minhas Conquistas
+            Conquistas
+          </TabsTrigger>
+          <TabsTrigger
+            value="challenges"
+            className="font-bold rounded-lg data-[state=active]:bg-slate-100 data-[state=active]:text-blue-600 transition-all text-xs md:text-sm"
+          >
+            Desafios
           </TabsTrigger>
           <TabsTrigger
             value="feed"
-            className="font-bold rounded-lg data-[state=active]:bg-slate-100 data-[state=active]:text-blue-600 transition-all"
+            className="font-bold rounded-lg data-[state=active]:bg-slate-100 data-[state=active]:text-blue-600 transition-all text-xs md:text-sm"
           >
-            Feed da Equipe
+            Feed
           </TabsTrigger>
         </TabsList>
         <TabsContent value="badges" className="space-y-6 animate-fade-in">
           <BadgesList />
         </TabsContent>
-        <TabsContent value="feed" className="animate-fade-in">
+        <TabsContent value="challenges" className="space-y-6 animate-fade-in">
+          <Challenges />
+        </TabsContent>
+        <TabsContent value="feed" className="space-y-6 animate-fade-in">
+          <div className="mb-2">
+            <h3 className="font-bold text-slate-800 mb-4 px-1">Histórias de Sucesso</h3>
+            <SuccessStories />
+          </div>
           <SocialFeed />
         </TabsContent>
       </Tabs>
