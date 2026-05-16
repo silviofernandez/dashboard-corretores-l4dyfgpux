@@ -1,20 +1,19 @@
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
+import { ChartContainer, ChartTooltip, ChartTooltipContent } from '@/components/ui/chart'
 import {
-  FileText,
-  Download,
-  TrendingUp,
-  Users,
-  ShieldAlert,
-  Award,
-  Star,
-  Calendar,
-  Mail,
-  Clock,
-  BarChart3,
-  TrendingDown,
-  Minus,
-} from 'lucide-react'
+  BarChart,
+  Bar,
+  LineChart,
+  Line,
+  AreaChart,
+  Area,
+  XAxis,
+  YAxis,
+  CartesianGrid,
+  ResponsiveContainer,
+} from 'recharts'
+import { Download, TrendingUp, TrendingDown, Minus, Award, Star, Clock } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import {
   Table,
@@ -37,12 +36,20 @@ import { Label } from '@/components/ui/label'
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
 import { useToast } from '@/hooks/use-toast'
 
-// Mock Data
+const overviewData = [
+  { period: 'Jan', volume: 15, conversion: 18, satisfaction: 4.5 },
+  { period: 'Fev', volume: 12, conversion: 15, satisfaction: 4.6 },
+  { period: 'Mar', volume: 18, conversion: 22, satisfaction: 4.7 },
+  { period: 'Abr', volume: 16, conversion: 19, satisfaction: 4.5 },
+  { period: 'Mai', volume: 21, conversion: 25, satisfaction: 4.8 },
+  { period: 'Jun', volume: 25, conversion: 28, satisfaction: 4.9 },
+]
+
 const weeklyBrokers = [
   {
     id: 1,
     name: 'Ana Paula Silva',
-    status: 'Acima do Esperado',
+    status: 'Acima',
     vgv: 3500000,
     percent: 140,
     avatar: 'https://img.usecurling.com/ppl/thumbnail?gender=female&seed=1',
@@ -50,7 +57,7 @@ const weeklyBrokers = [
   {
     id: 2,
     name: 'Marcos Gomes',
-    status: 'Dentro do Esperado',
+    status: 'Dentro',
     vgv: 2450000,
     percent: 98,
     avatar: 'https://img.usecurling.com/ppl/thumbnail?gender=male&seed=2',
@@ -58,7 +65,7 @@ const weeklyBrokers = [
   {
     id: 3,
     name: 'Juliana Costa',
-    status: 'Dentro do Esperado',
+    status: 'Dentro',
     vgv: 2300000,
     percent: 92,
     avatar: 'https://img.usecurling.com/ppl/thumbnail?gender=female&seed=3',
@@ -66,61 +73,10 @@ const weeklyBrokers = [
   {
     id: 4,
     name: 'Carlos Eduardo',
-    status: 'Precisa de Apoio',
+    status: 'Abaixo',
     vgv: 800000,
     percent: 32,
     avatar: 'https://img.usecurling.com/ppl/thumbnail?gender=male&seed=4',
-  },
-]
-
-const individualPerformance = [
-  {
-    name: 'Ana Paula Silva',
-    sales: 45,
-    vgv: 21500000,
-    trend: '+12%',
-    isPositive: true,
-    avatar: 'https://img.usecurling.com/ppl/thumbnail?gender=female&seed=1',
-  },
-  {
-    name: 'Marcos Gomes',
-    sales: 32,
-    vgv: 11200000,
-    trend: '+5%',
-    isPositive: true,
-    avatar: 'https://img.usecurling.com/ppl/thumbnail?gender=male&seed=2',
-  },
-  {
-    name: 'Juliana Costa',
-    sales: 28,
-    vgv: 9800000,
-    trend: '-2%',
-    isPositive: false,
-    avatar: 'https://img.usecurling.com/ppl/thumbnail?gender=female&seed=3',
-  },
-  {
-    name: 'Carlos Eduardo',
-    sales: 12,
-    vgv: 4500000,
-    trend: '-15%',
-    isPositive: false,
-    avatar: 'https://img.usecurling.com/ppl/thumbnail?gender=male&seed=4',
-  },
-  {
-    name: 'Fernanda Lima',
-    sales: 19,
-    vgv: 7100000,
-    trend: '+1%',
-    isPositive: true,
-    avatar: 'https://img.usecurling.com/ppl/thumbnail?gender=female&seed=5',
-  },
-  {
-    name: 'Roberto Alves',
-    sales: 15,
-    vgv: 5200000,
-    trend: '-8%',
-    isPositive: false,
-    avatar: 'https://img.usecurling.com/ppl/thumbnail?gender=male&seed=6',
   },
 ]
 
@@ -142,34 +98,173 @@ export default function AdminReports() {
     }).format(val)
 
   return (
-    <div className="p-4 md:p-6 space-y-6 max-w-6xl mx-auto pb-10">
+    <div className="p-4 md:p-6 space-y-6 max-w-7xl mx-auto pb-10">
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
         <div>
           <h2 className="text-2xl md:text-3xl font-bold tracking-tight">Suite de Relatórios</h2>
           <p className="text-slate-500 text-sm md:text-base">
-            Visão estratégica de resultados, classificações semanais e fechamentos.
+            Visão estratégica de resultados, desempenho e satisfação.
           </p>
         </div>
-        <Button variant="outline" className="gap-2 shrink-0">
-          <Download className="w-4 h-4" /> Exportar Dados Gerais (CSV)
-        </Button>
+        <div className="flex items-center gap-2 w-full md:w-auto">
+          <Select defaultValue="monthly">
+            <SelectTrigger className="w-[140px] bg-white">
+              <SelectValue placeholder="Período" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="weekly">Semanal</SelectItem>
+              <SelectItem value="monthly">Mensal</SelectItem>
+              <SelectItem value="yearly">Anual</SelectItem>
+            </SelectContent>
+          </Select>
+          <Button variant="outline" className="gap-2 shrink-0 bg-white">
+            <Download className="w-4 h-4" /> Exportar PDF
+          </Button>
+        </div>
       </div>
 
-      <Tabs defaultValue="weekly" className="w-full">
+      <Tabs defaultValue="overview" className="w-full">
         <TabsList className="grid w-full grid-cols-2 md:grid-cols-4 h-auto mb-6 gap-2">
+          <TabsTrigger value="overview" className="py-2.5">
+            Visão Geral
+          </TabsTrigger>
           <TabsTrigger value="weekly" className="py-2.5">
             Resumo Semanal
           </TabsTrigger>
           <TabsTrigger value="monthly" className="py-2.5">
             Fechamento Mensal
           </TabsTrigger>
-          <TabsTrigger value="individual" className="py-2.5">
-            Cards Individuais
-          </TabsTrigger>
           <TabsTrigger value="schedule" className="py-2.5">
             Agendamento
           </TabsTrigger>
         </TabsList>
+
+        <TabsContent value="overview" className="space-y-6 animate-in fade-in-50">
+          <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+            <Card className="shadow-sm col-span-1 lg:col-span-2">
+              <CardHeader>
+                <CardTitle>Volume de Vendas (VGV)</CardTitle>
+                <CardDescription>
+                  Evolução de volume geral de vendas em Milhões (R$)
+                </CardDescription>
+              </CardHeader>
+              <CardContent>
+                <div className="h-[250px]">
+                  <ChartContainer
+                    config={{ volume: { label: 'VGV', color: 'hsl(var(--primary))' } }}
+                    className="h-full w-full"
+                  >
+                    <ResponsiveContainer width="100%" height="100%">
+                      <BarChart
+                        data={overviewData}
+                        margin={{ top: 10, right: 10, left: -20, bottom: 0 }}
+                      >
+                        <CartesianGrid strokeDasharray="3 3" vertical={false} />
+                        <XAxis dataKey="period" axisLine={false} tickLine={false} />
+                        <YAxis
+                          axisLine={false}
+                          tickLine={false}
+                          tickFormatter={(val) => `${val}M`}
+                        />
+                        <ChartTooltip content={<ChartTooltipContent />} />
+                        <Bar dataKey="volume" fill="var(--color-volume)" radius={[4, 4, 0, 0]} />
+                      </BarChart>
+                    </ResponsiveContainer>
+                  </ChartContainer>
+                </div>
+              </CardContent>
+            </Card>
+
+            <Card className="shadow-sm">
+              <CardHeader>
+                <CardTitle>Taxa de Conversão (%)</CardTitle>
+                <CardDescription>Média de leads convertidos no período</CardDescription>
+              </CardHeader>
+              <CardContent>
+                <div className="h-[250px]">
+                  <ChartContainer
+                    config={{ conversion: { label: 'Conversão', color: 'hsl(210, 100%, 50%)' } }}
+                    className="h-full w-full"
+                  >
+                    <ResponsiveContainer width="100%" height="100%">
+                      <LineChart
+                        data={overviewData}
+                        margin={{ top: 10, right: 10, left: -20, bottom: 0 }}
+                      >
+                        <CartesianGrid strokeDasharray="3 3" vertical={false} />
+                        <XAxis dataKey="period" axisLine={false} tickLine={false} />
+                        <YAxis
+                          axisLine={false}
+                          tickLine={false}
+                          tickFormatter={(val) => `${val}%`}
+                        />
+                        <ChartTooltip content={<ChartTooltipContent />} />
+                        <Line
+                          type="monotone"
+                          dataKey="conversion"
+                          stroke="var(--color-conversion)"
+                          strokeWidth={3}
+                          dot={{ r: 4 }}
+                        />
+                      </LineChart>
+                    </ResponsiveContainer>
+                  </ChartContainer>
+                </div>
+              </CardContent>
+            </Card>
+
+            <Card className="shadow-sm lg:col-span-3">
+              <CardHeader>
+                <CardTitle>Índice de Satisfação de Clientes (CSAT)</CardTitle>
+                <CardDescription>
+                  Avaliação média após fechamento ou atendimento (Max: 5.0)
+                </CardDescription>
+              </CardHeader>
+              <CardContent>
+                <div className="h-[220px]">
+                  <ChartContainer
+                    config={{ satisfaction: { label: 'Satisfação', color: 'hsl(142, 71%, 45%)' } }}
+                    className="h-full w-full"
+                  >
+                    <ResponsiveContainer width="100%" height="100%">
+                      <AreaChart
+                        data={overviewData}
+                        margin={{ top: 10, right: 10, left: -20, bottom: 0 }}
+                      >
+                        <defs>
+                          <linearGradient id="colorSat" x1="0" y1="0" x2="0" y2="1">
+                            <stop
+                              offset="5%"
+                              stopColor="var(--color-satisfaction)"
+                              stopOpacity={0.3}
+                            />
+                            <stop
+                              offset="95%"
+                              stopColor="var(--color-satisfaction)"
+                              stopOpacity={0}
+                            />
+                          </linearGradient>
+                        </defs>
+                        <CartesianGrid strokeDasharray="3 3" vertical={false} />
+                        <XAxis dataKey="period" axisLine={false} tickLine={false} />
+                        <YAxis axisLine={false} tickLine={false} domain={[0, 5]} />
+                        <ChartTooltip content={<ChartTooltipContent />} />
+                        <Area
+                          type="monotone"
+                          dataKey="satisfaction"
+                          stroke="var(--color-satisfaction)"
+                          fillOpacity={1}
+                          fill="url(#colorSat)"
+                          strokeWidth={2}
+                        />
+                      </AreaChart>
+                    </ResponsiveContainer>
+                  </ChartContainer>
+                </div>
+              </CardContent>
+            </Card>
+          </div>
+        </TabsContent>
 
         <TabsContent value="weekly" className="space-y-6 animate-in fade-in-50">
           <Card>
@@ -186,7 +281,7 @@ export default function AdminReports() {
                     <TableHead>Corretor</TableHead>
                     <TableHead>Status de Performance</TableHead>
                     <TableHead className="text-right">VGV Alcançado</TableHead>
-                    <TableHead className="text-right">% da Meta Semanal</TableHead>
+                    <TableHead className="text-right">% da Meta</TableHead>
                   </TableRow>
                 </TableHeader>
                 <TableBody>
@@ -205,23 +300,21 @@ export default function AdminReports() {
                         <Badge
                           variant="outline"
                           className={
-                            broker.status === 'Acima do Esperado'
+                            broker.status === 'Acima'
                               ? 'bg-green-50 text-green-700 border-green-200'
-                              : broker.status === 'Dentro do Esperado'
+                              : broker.status === 'Dentro'
                                 ? 'bg-yellow-50 text-yellow-700 border-yellow-200'
                                 : 'bg-red-50 text-red-700 border-red-200'
                           }
                         >
-                          {broker.status === 'Acima do Esperado' && (
-                            <TrendingUp className="w-3 h-3 mr-1" />
-                          )}
-                          {broker.status === 'Dentro do Esperado' && (
-                            <Minus className="w-3 h-3 mr-1" />
-                          )}
-                          {broker.status === 'Precisa de Apoio' && (
-                            <TrendingDown className="w-3 h-3 mr-1" />
-                          )}
-                          {broker.status}
+                          {broker.status === 'Acima' && <TrendingUp className="w-3 h-3 mr-1" />}
+                          {broker.status === 'Dentro' && <Minus className="w-3 h-3 mr-1" />}
+                          {broker.status === 'Abaixo' && <TrendingDown className="w-3 h-3 mr-1" />}
+                          {broker.status === 'Acima'
+                            ? 'Acima do Esperado'
+                            : broker.status === 'Dentro'
+                              ? 'Dentro do Esperado'
+                              : 'Precisa de Apoio'}
                         </Badge>
                       </TableCell>
                       <TableCell className="text-right font-mono font-medium">
@@ -246,24 +339,22 @@ export default function AdminReports() {
                   <Award className="w-5 h-5" /> Campeões 3x1 (Diamante)
                 </CardTitle>
                 <CardDescription className="text-blue-600/70">
-                  Corretores que atingiram os critérios máximos no fechamento anterior.
+                  Corretores que atingiram os critérios máximos.
                 </CardDescription>
               </CardHeader>
               <CardContent>
-                <div className="space-y-4">
-                  <div className="flex items-center justify-between bg-white/60 p-3 rounded-lg border border-blue-200/50">
-                    <div className="flex items-center gap-3">
-                      <Avatar>
-                        <AvatarImage src="https://img.usecurling.com/ppl/thumbnail?gender=female&seed=1" />
-                      </Avatar>
-                      <div>
-                        <p className="font-bold text-slate-800">Ana Paula Silva</p>
-                        <p className="text-xs text-blue-600 font-medium">145 leads trabalhados</p>
-                      </div>
+                <div className="flex items-center justify-between bg-white/60 p-3 rounded-lg border border-blue-200/50">
+                  <div className="flex items-center gap-3">
+                    <Avatar>
+                      <AvatarImage src="https://img.usecurling.com/ppl/thumbnail?gender=female&seed=1" />
+                    </Avatar>
+                    <div>
+                      <p className="font-bold text-slate-800">Ana Paula Silva</p>
+                      <p className="text-xs text-blue-600 font-medium">145 leads trabalhados</p>
                     </div>
-                    <div className="text-right">
-                      <p className="font-bold text-lg text-slate-900">{formatCurrency(21500000)}</p>
-                    </div>
+                  </div>
+                  <div className="text-right">
+                    <p className="font-bold text-lg text-slate-900">{formatCurrency(21500000)}</p>
                   </div>
                 </div>
               </CardContent>
@@ -275,113 +366,26 @@ export default function AdminReports() {
                   <Star className="w-5 h-5" /> Destaques 2x1 (Ouro)
                 </CardTitle>
                 <CardDescription className="text-amber-700/70">
-                  Corretores com excelente performance garantindo dobro de leads.
+                  Performance garantindo dobro de leads.
                 </CardDescription>
               </CardHeader>
               <CardContent>
-                <div className="space-y-4">
-                  <div className="flex items-center justify-between bg-white/60 p-3 rounded-lg border border-amber-200/50">
-                    <div className="flex items-center gap-3">
-                      <Avatar>
-                        <AvatarImage src="https://img.usecurling.com/ppl/thumbnail?gender=male&seed=2" />
-                      </Avatar>
-                      <div>
-                        <p className="font-bold text-slate-800">Marcos Gomes</p>
-                        <p className="text-xs text-amber-700 font-medium">98 leads trabalhados</p>
-                      </div>
+                <div className="flex items-center justify-between bg-white/60 p-3 rounded-lg border border-amber-200/50">
+                  <div className="flex items-center gap-3">
+                    <Avatar>
+                      <AvatarImage src="https://img.usecurling.com/ppl/thumbnail?gender=male&seed=2" />
+                    </Avatar>
+                    <div>
+                      <p className="font-bold text-slate-800">Marcos Gomes</p>
+                      <p className="text-xs text-amber-700 font-medium">98 leads trabalhados</p>
                     </div>
-                    <div className="text-right">
-                      <p className="font-bold text-lg text-slate-900">{formatCurrency(11200000)}</p>
-                    </div>
+                  </div>
+                  <div className="text-right">
+                    <p className="font-bold text-lg text-slate-900">{formatCurrency(11200000)}</p>
                   </div>
                 </div>
               </CardContent>
             </Card>
-          </div>
-
-          <Card>
-            <CardHeader>
-              <CardTitle>Distribuição de Leads no Mês</CardTitle>
-              <CardDescription>
-                Proporção de leads entregues por nível de privilégio do corretor.
-              </CardDescription>
-            </CardHeader>
-            <CardContent>
-              <div className="space-y-6">
-                <div className="space-y-2">
-                  <div className="flex justify-between text-sm">
-                    <span className="font-medium text-blue-700">Nível Diamante (3x1)</span>
-                    <span className="font-bold">45% do total</span>
-                  </div>
-                  <div className="h-4 bg-slate-100 rounded-full overflow-hidden">
-                    <div className="h-full bg-blue-500 rounded-full" style={{ width: '45%' }}></div>
-                  </div>
-                </div>
-                <div className="space-y-2">
-                  <div className="flex justify-between text-sm">
-                    <span className="font-medium text-amber-600">Nível Ouro (2x1)</span>
-                    <span className="font-bold">35% do total</span>
-                  </div>
-                  <div className="h-4 bg-slate-100 rounded-full overflow-hidden">
-                    <div
-                      className="h-full bg-amber-400 rounded-full"
-                      style={{ width: '35%' }}
-                    ></div>
-                  </div>
-                </div>
-                <div className="space-y-2">
-                  <div className="flex justify-between text-sm">
-                    <span className="font-medium text-slate-600">Nível Padrão (1x1)</span>
-                    <span className="font-bold">20% do total</span>
-                  </div>
-                  <div className="h-4 bg-slate-100 rounded-full overflow-hidden">
-                    <div
-                      className="h-full bg-slate-400 rounded-full"
-                      style={{ width: '20%' }}
-                    ></div>
-                  </div>
-                </div>
-              </div>
-            </CardContent>
-          </Card>
-        </TabsContent>
-
-        <TabsContent value="individual" className="space-y-6 animate-in fade-in-50">
-          <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-            {individualPerformance.map((broker) => (
-              <Card key={broker.name} className="shadow-sm hover:shadow-md transition-shadow">
-                <CardContent className="p-5">
-                  <div className="flex items-center gap-4 mb-4">
-                    <Avatar className="w-12 h-12 border-2 border-slate-100">
-                      <AvatarImage src={broker.avatar} />
-                      <AvatarFallback>{broker.name.substring(0, 2)}</AvatarFallback>
-                    </Avatar>
-                    <div>
-                      <h3 className="font-bold text-slate-800 leading-tight">{broker.name}</h3>
-                      <p className="text-xs text-slate-500 mt-1">
-                        {broker.sales} vendas no período
-                      </p>
-                    </div>
-                  </div>
-                  <div className="pt-4 border-t flex items-end justify-between">
-                    <div>
-                      <p className="text-xs text-slate-500 mb-1">VGV Acumulado</p>
-                      <p className="font-mono font-bold text-lg">{formatCurrency(broker.vgv)}</p>
-                    </div>
-                    <div
-                      className={`flex items-center gap-1 text-xs font-bold px-2 py-1 rounded-full ${broker.isPositive ? 'bg-green-100 text-green-700' : 'bg-red-100 text-red-700'}`}
-                    >
-                      {broker.isPositive ? (
-                        <TrendingUp className="w-3 h-3" />
-                      ) : (
-                        <TrendingDown className="w-3 h-3" />
-                      )}
-                      {broker.trend}
-                    </div>
-                  </div>
-                </CardContent>
-              </Card>
-            ))}
           </div>
         </TabsContent>
 
@@ -390,49 +394,29 @@ export default function AdminReports() {
             <CardHeader>
               <CardTitle>Agendamento Automático de Relatórios</CardTitle>
               <CardDescription>
-                Configure o envio de resumos gerenciais para o email da diretoria e gestão.
+                Configure o envio de resumos para o email da diretoria e gestão.
               </CardDescription>
             </CardHeader>
             <CardContent className="space-y-5">
               <div className="space-y-3">
-                <Label className="text-slate-700">Tipo de Relatório</Label>
+                <Label>Tipo de Relatório</Label>
                 <Select defaultValue="full">
-                  <SelectTrigger className="w-full">
+                  <SelectTrigger>
                     <SelectValue placeholder="Selecione o relatório" />
                   </SelectTrigger>
                   <SelectContent>
                     <SelectItem value="full">Relatório Completo (Ranking + Fechamento)</SelectItem>
-                    <SelectItem value="weekly">Apenas Resumo Semanal</SelectItem>
                     <SelectItem value="alerts">Relatório de Alertas e Engajamento</SelectItem>
                   </SelectContent>
                 </Select>
               </div>
-
               <div className="space-y-3">
-                <Label className="text-slate-700">Frequência de Envio</Label>
-                <Select defaultValue="weekly">
-                  <SelectTrigger className="w-full">
-                    <SelectValue placeholder="Selecione a frequência" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="daily">Diário (Fim do Dia - 18h)</SelectItem>
-                    <SelectItem value="weekly">Semanal (Toda Segunda-feira às 08h)</SelectItem>
-                    <SelectItem value="monthly">Mensal (Dia 1 de cada mês às 08h)</SelectItem>
-                  </SelectContent>
-                </Select>
-              </div>
-
-              <div className="space-y-3">
-                <Label className="text-slate-700">Destinatários</Label>
+                <Label>Destinatários</Label>
                 <Input
-                  defaultValue="gestao@imobiliaria.com, diretoria@imobiliaria.com"
+                  defaultValue="gestao@imobiliaria.com"
                   placeholder="Emails separados por vírgula"
                 />
-                <p className="text-xs text-slate-500">
-                  Insira os emails separados por vírgula para múltiplos destinatários.
-                </p>
               </div>
-
               <Button onClick={handleSchedule} className="w-full sm:w-auto mt-4 gap-2">
                 <Clock className="w-4 h-4" /> Salvar Agendamento
               </Button>
