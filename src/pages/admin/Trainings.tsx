@@ -27,6 +27,7 @@ export default function AdminTrainings() {
       theme: formData.get('theme') as string,
       date: formData.get('date') as string,
       time: formData.get('time') as string,
+      description: formData.get('description') as string,
     })
 
     setIsDialogOpen(false)
@@ -81,6 +82,17 @@ export default function AdminTrainings() {
                   </Label>
                   <Input name="time" id="time" type="time" required className="col-span-3" />
                 </div>
+                <div className="grid grid-cols-4 items-center gap-4">
+                  <Label htmlFor="description" className="text-right">
+                    Descrição
+                  </Label>
+                  <Input
+                    name="description"
+                    id="description"
+                    placeholder="Detalhes (opcional)"
+                    className="col-span-3"
+                  />
+                </div>
               </div>
               <DialogFooter>
                 <Button type="submit">Salvar Agendamento</Button>
@@ -116,6 +128,10 @@ export default function AdminTrainings() {
               </div>
               <h3 className="font-bold text-lg text-slate-800 leading-tight">{t.theme}</h3>
             </div>
+
+            {(t as any).description && (
+              <p className="text-sm text-slate-500 mb-4 line-clamp-2">{(t as any).description}</p>
+            )}
 
             <div className="mt-auto space-y-3 pt-4 border-t border-slate-100">
               <div className="flex items-center gap-2 text-slate-600 text-sm font-medium">

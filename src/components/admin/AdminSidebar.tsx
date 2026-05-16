@@ -8,6 +8,7 @@ import {
   Settings,
   BrainCircuit,
   BookOpen,
+  MonitorPlay,
 } from 'lucide-react'
 import { Link, useLocation, useNavigate } from 'react-router-dom'
 import { LogOut } from 'lucide-react'
@@ -35,6 +36,7 @@ const navigation = [
   { name: 'Alertas', href: '/admin/alertas', icon: Bell },
   { name: 'Relatórios', href: '/admin/relatorios', icon: BarChart3 },
   { name: 'Motor IA', href: '/admin/motor', icon: BrainCircuit },
+  { name: 'Painel da TV', href: '/tv-ranking', icon: MonitorPlay, external: true },
   { name: 'Configurações', href: '/admin/configuracoes', icon: Settings },
 ]
 
@@ -72,7 +74,11 @@ export function AdminSidebar() {
                     }
                     tooltip={item.name}
                   >
-                    <Link to={item.href}>
+                    <Link
+                      to={item.href}
+                      target={(item as any).external ? '_blank' : undefined}
+                      rel={(item as any).external ? 'noopener noreferrer' : undefined}
+                    >
                       <item.icon />
                       <span>{item.name}</span>
                     </Link>

@@ -192,6 +192,11 @@ export default function BrokerDashboard() {
                   >
                     <div>
                       <h4 className="font-bold text-slate-800">{t.theme}</h4>
+                      {(t as any).description && (
+                        <p className="text-sm text-slate-500 mt-1 line-clamp-2">
+                          {(t as any).description}
+                        </p>
+                      )}
                       <div className="flex items-center gap-4 mt-2 text-sm text-slate-600">
                         <span className="flex items-center gap-1">
                           <Calendar className="w-4 h-4" /> {t.date.split('-').reverse().join('/')}

@@ -21,7 +21,11 @@ const App = () => {
         <Routes>
           <Route path="/" element={<Navigate to="/login" replace />} />
           <Route path="/login" element={<Login />} />
-          <Route path="/tv-ranking" element={<TvDashboard />} />
+
+          {/* TV Ranking - Protected, any role */}
+          <Route element={<ProtectedRoute />}>
+            <Route path="/tv-ranking" element={<TvDashboard />} />
+          </Route>
 
           {/* Admin Routes */}
           <Route element={<ProtectedRoute allowedRoles={['admin']} />}>
