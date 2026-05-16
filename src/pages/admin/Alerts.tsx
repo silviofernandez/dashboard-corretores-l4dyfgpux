@@ -1,3 +1,4 @@
+import { useState } from 'react'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Switch } from '@/components/ui/switch'
 import { Label } from '@/components/ui/label'
@@ -5,118 +6,434 @@ import { Button } from '@/components/ui/button'
 import { Textarea } from '@/components/ui/textarea'
 import { Input } from '@/components/ui/input'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
-import { MessageSquare, Mail, Zap } from 'lucide-react'
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from '@/components/ui/table'
+import { Badge } from '@/components/ui/badge'
+import { useToast } from '@/hooks/use-toast'
+import {
+  MessageSquare,
+  Mail,
+  Zap,
+  TrendingDown,
+  Map,
+  Clock,
+  Smartphone,
+  Send,
+  LayoutDashboard,
+  ShieldAlert,
+  Users,
+  CheckCircle2,
+} from 'lucide-react'
+
+const deliveryLogs = [
+  {
+    id: 1,
+    type: 'WhatsApp',
+    to: 'Carlos Eduardo',
+    trigger: 'Sem Interação (7d)',
+    status: 'Enviado',
+    time: 'Há 10 min',
+  },
+  {
+    id: 2,
+    type: 'Email',
+    to: 'Juliana Costa',
+    trigger: 'Abaixo Expectativa',
+    status: 'Lido',
+    time: 'Há 2 horas',
+  },
+  {
+    id: 3,
+    type: 'WhatsApp',
+    to: 'Marcos Gomes',
+    trigger: 'Meta Atingida',
+    status: 'Enviado',
+    time: 'Há 5 horas',
+  },
+  {
+    id: 4,
+    type: 'Email',
+    to: 'Ana Paula Silva',
+    trigger: 'Novo Lead',
+    status: 'Lido',
+    time: 'Ontem',
+  },
+  {
+    id: 5,
+    type: 'WhatsApp',
+    to: 'Carlos Eduardo',
+    trigger: 'Desvio da Rota',
+    status: 'Falha',
+    time: 'Ontem',
+  },
+]
 
 export default function AdminAlerts() {
+  const { toast } = useToast()
+
+  // Templates State
+  const [wppTemplate, setWppTemplate] = useState(
+    'Olá {{corretor_nome}}, notei que você está abaixo da expectativa semanal (R$ {{vgv_atual}} de R$ {{meta_semanal}}). Como a gestão pode ajudar a virar esse jogo? 🚀',
+  )
+  const [emailSubject, setEmailSubject] = useState('Aviso de Inatividade de Lead: {{lead_nome}}')
+  const [emailTemplate, setEmailTemplate] = useState(
+    'Olá {{corretor_nome}},\n\nO lead {{lead_nome}} está há 7 dias sem nenhuma interação registrada no CRM.\n\nPor favor, retome o contato imediatamente ou devolva o lead para a fila para que possamos distribuí-lo para a roleta novamente.\n\nAtenciosamente,\nGestão Skip',
+  )
+
+  // Previews
+  const previewWpp = wppTemplate
+    .replace(/{{corretor_nome}}/g, 'Carlos')
+    .replace(/{{vgv_atual}}/g, '500.000')
+    .replace(/{{meta_semanal}}/g, '2.500.000')
+
+  const previewEmailSubj = emailSubject.replace(/{{lead_nome}}/g, 'João Silva')
+  const previewEmailBody = emailTemplate
+    .replace(/{{corretor_nome}}/g, 'Carlos')
+    .replace(/{{lead_nome}}/g, 'João Silva')
+
+  const handleTestSend = () => {
+    toast({
+      title: 'Mensagem de teste enviada',
+      description: 'A pré-visualização foi disparada para o seu contato de teste.',
+    })
+  }
+
   return (
-    <div className="p-4 md:p-6 space-y-6 max-w-5xl mx-auto">
+    <div className="p-4 md:p-6 space-y-6 max-w-6xl mx-auto pb-10">
       <div>
         <h2 className="text-2xl md:text-3xl font-bold tracking-tight">
           Central de Alertas e Notificações
         </h2>
         <p className="text-slate-500 text-sm md:text-base">
-          Configure gatilhos e templates de mensagens para Email e WhatsApp.
+          Configure gatilhos de automação, personalize templates e monitore os disparos para a
+          equipe.
         </p>
       </div>
 
-      <div className="grid gap-6 md:grid-cols-3">
-        <Card className="md:col-span-1 h-fit shadow-sm">
-          <CardHeader>
-            <CardTitle className="text-lg flex items-center gap-2">
-              <Zap className="w-5 h-5 text-amber-500" />
-              Gatilhos Ativos
-            </CardTitle>
-            <CardDescription>Ative ou desative notificações automáticas do sistema</CardDescription>
-          </CardHeader>
-          <CardContent className="space-y-6">
-            <div className="flex items-center justify-between space-x-2 border-b pb-4">
-              <Label htmlFor="goal-reached" className="flex flex-col space-y-1">
-                <span className="font-medium">Meta Atingida</span>
-                <span className="font-normal text-xs text-slate-500">
-                  Notifica o corretor ao bater meta mensal
-                </span>
-              </Label>
-              <Switch id="goal-reached" defaultChecked />
-            </div>
-            <div className="flex items-center justify-between space-x-2 border-b pb-4">
-              <Label htmlFor="new-lead" className="flex flex-col space-y-1">
-                <span className="font-medium">Novo Lead</span>
-                <span className="font-normal text-xs text-slate-500">
-                  Aviso imediato de novo lead distribuído
-                </span>
-              </Label>
-              <Switch id="new-lead" defaultChecked />
-            </div>
-            <div className="flex items-center justify-between space-x-2">
-              <Label htmlFor="doc-expiring" className="flex flex-col space-y-1">
-                <span className="font-medium">Docs Vencendo</span>
-                <span className="font-normal text-xs text-slate-500">
-                  Alerta gestor e corretor 5 dias antes de vencer
-                </span>
-              </Label>
-              <Switch id="doc-expiring" />
-            </div>
-          </CardContent>
-        </Card>
+      <Tabs defaultValue="triggers" className="w-full">
+        <TabsList className="grid w-full grid-cols-1 md:grid-cols-3 h-auto mb-6 gap-2">
+          <TabsTrigger value="triggers" className="py-2.5">
+            <Zap className="w-4 h-4 mr-2" /> Gatilhos & Automação
+          </TabsTrigger>
+          <TabsTrigger value="templates" className="py-2.5">
+            <MessageSquare className="w-4 h-4 mr-2" /> Templates
+          </TabsTrigger>
+          <TabsTrigger value="dashboard" className="py-2.5">
+            <LayoutDashboard className="w-4 h-4 mr-2" /> Monitoramento
+          </TabsTrigger>
+        </TabsList>
 
-        <Card className="md:col-span-2 shadow-sm">
-          <CardHeader>
-            <CardTitle className="text-lg">Templates de Mensagens</CardTitle>
-            <CardDescription>
-              Personalize o texto das notificações automáticas enviadas
-            </CardDescription>
-          </CardHeader>
-          <CardContent>
-            <Tabs defaultValue="whatsapp" className="w-full">
-              <TabsList className="grid w-full grid-cols-2 mb-6">
-                <TabsTrigger value="whatsapp" className="gap-2">
-                  <MessageSquare className="w-4 h-4" />
-                  WhatsApp
-                </TabsTrigger>
-                <TabsTrigger value="email" className="gap-2">
-                  <Mail className="w-4 h-4" />
-                  E-mail
-                </TabsTrigger>
-              </TabsList>
+        <TabsContent value="triggers" className="space-y-6 animate-in fade-in-50">
+          <Card>
+            <CardHeader>
+              <CardTitle>Gatilhos de Performance e Inatividade</CardTitle>
+              <CardDescription>
+                Defina as condições para disparar alertas automáticos preventivos.
+              </CardDescription>
+            </CardHeader>
+            <CardContent className="space-y-6">
+              <div className="flex items-center justify-between space-x-2 border-b pb-4">
+                <Label className="flex flex-col space-y-1">
+                  <span className="font-semibold text-amber-700 flex items-center gap-2">
+                    <TrendingDown className="w-4 h-4" /> Abaixo da Expectativa Semanal
+                  </span>
+                  <span className="font-normal text-sm text-slate-500">
+                    Dispara se o VGV semanal estiver abaixo da porcentagem configurada na meta
+                    fragmentada.
+                  </span>
+                </Label>
+                <Switch defaultChecked />
+              </div>
+              <div className="flex items-center justify-between space-x-2 border-b pb-4">
+                <Label className="flex flex-col space-y-1">
+                  <span className="font-semibold text-red-700 flex items-center gap-2">
+                    <Map className="w-4 h-4" /> Desvio da Rota da Meta
+                  </span>
+                  <span className="font-normal text-sm text-slate-500">
+                    Dispara quando a projeção de fechamento mensal aponta para um resultado muito
+                    inferior à meta global.
+                  </span>
+                </Label>
+                <Switch defaultChecked />
+              </div>
+              <div className="flex items-center justify-between space-x-2">
+                <Label className="flex flex-col space-y-1">
+                  <span className="font-semibold text-indigo-700 flex items-center gap-2">
+                    <Clock className="w-4 h-4" /> Sem Interação com Lead (7 Dias)
+                  </span>
+                  <span className="font-normal text-sm text-slate-500">
+                    Alerta sobre leads distribuídos que não receberam nenhuma ação registrada no CRM
+                    por 7 dias.
+                  </span>
+                </Label>
+                <Switch defaultChecked />
+              </div>
+            </CardContent>
+          </Card>
 
-              <TabsContent value="whatsapp" className="space-y-4 animate-in fade-in-50">
-                <div className="space-y-3">
-                  <Label>Template: Meta Atingida</Label>
-                  <Textarea
-                    className="min-h-[120px] resize-y font-mono text-sm"
-                    defaultValue="Parabéns, {{corretor_nome}}! 🎉 Você acaba de atingir sua meta de R$ {{meta_valor}} neste mês. Excelente trabalho!"
-                  />
-                  <p className="text-xs text-slate-500 bg-slate-50 p-2 rounded-md border">
-                    <span className="font-semibold">Variáveis disponíveis:</span>{' '}
-                    {'{{corretor_nome}}'}, {'{{meta_valor}}'}, {'{{mes_atual}}'}
+          <Card>
+            <CardHeader>
+              <CardTitle>Motor de Escalonamento (Avisos em Níveis)</CardTitle>
+              <CardDescription>
+                Configure a hierarquia de avisos para corretores com performance crítica continuada.
+              </CardDescription>
+            </CardHeader>
+            <CardContent>
+              <div className="grid md:grid-cols-3 gap-4">
+                <div className="p-4 border rounded-xl bg-yellow-50/50 transition-colors hover:bg-yellow-50">
+                  <div className="flex items-start justify-between mb-2">
+                    <h4 className="font-bold text-sm text-yellow-800">1º Aviso (Amigável)</h4>
+                    <Switch defaultChecked size="sm" />
+                  </div>
+                  <p className="text-xs text-slate-600 mb-3 leading-relaxed">
+                    Mensagem automática no WhatsApp do corretor oferecendo apoio e dicas para
+                    destravar vendas.
                   </p>
                 </div>
-                <Button className="w-full sm:w-auto">Salvar Template</Button>
-              </TabsContent>
-
-              <TabsContent value="email" className="space-y-4 animate-in fade-in-50">
-                <div className="space-y-2">
-                  <Label>Assunto do E-mail (Novo Lead)</Label>
-                  <Input defaultValue="Novo Lead Atribuído: {{lead_nome}}" />
-                </div>
-                <div className="space-y-3 pt-2">
-                  <Label>Corpo do E-mail</Label>
-                  <Textarea
-                    className="min-h-[160px] font-mono text-sm"
-                    defaultValue="Olá {{corretor_nome}},&#10;&#10;Um novo lead foi atribuído a você:&#10;Nome: {{lead_nome}}&#10;Telefone: {{lead_telefone}}&#10;&#10;Acesse o CRM para iniciar o atendimento."
-                  />
-                  <p className="text-xs text-slate-500 bg-slate-50 p-2 rounded-md border">
-                    <span className="font-semibold">Variáveis disponíveis:</span>{' '}
-                    {'{{corretor_nome}}'}, {'{{lead_nome}}'}, {'{{lead_telefone}}'},{' '}
-                    {'{{link_crm}}'}
+                <div className="p-4 border rounded-xl bg-orange-50/50 transition-colors hover:bg-orange-50">
+                  <div className="flex items-start justify-between mb-2">
+                    <h4 className="font-bold text-sm text-orange-800">2º Aviso (Atenção)</h4>
+                    <Switch defaultChecked size="sm" />
+                  </div>
+                  <p className="text-xs text-slate-600 mb-3 leading-relaxed">
+                    Notificação formal para o corretor com cópia oculta automática para o email da
+                    gestão de vendas.
                   </p>
                 </div>
-                <Button className="w-full sm:w-auto">Salvar Template</Button>
-              </TabsContent>
-            </Tabs>
-          </CardContent>
-        </Card>
-      </div>
+                <div className="p-4 border rounded-xl bg-red-50/50 transition-colors hover:bg-red-50">
+                  <div className="flex items-start justify-between mb-2">
+                    <h4 className="font-bold text-sm text-red-800">3º Aviso (Crítico)</h4>
+                    <Switch defaultChecked size="sm" />
+                  </div>
+                  <p className="text-xs text-slate-600 mb-3 leading-relaxed">
+                    Alerta destacado na dashboard do gerente e pausa temporária no recebimento de
+                    novos leads.
+                  </p>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+        </TabsContent>
+
+        <TabsContent value="templates" className="space-y-6 animate-in fade-in-50">
+          <Card>
+            <CardHeader>
+              <CardTitle>Central de Templates de Comunicação</CardTitle>
+              <CardDescription>
+                Edite e pré-visualize como as mensagens chegarão para a equipe.
+              </CardDescription>
+            </CardHeader>
+            <CardContent>
+              <Tabs defaultValue="whatsapp" className="w-full">
+                <TabsList className="grid w-[300px] grid-cols-2 mb-6">
+                  <TabsTrigger value="whatsapp" className="gap-2">
+                    <Smartphone className="w-4 h-4" /> WhatsApp
+                  </TabsTrigger>
+                  <TabsTrigger value="email" className="gap-2">
+                    <Mail className="w-4 h-4" /> Email
+                  </TabsTrigger>
+                </TabsList>
+
+                <TabsContent value="whatsapp" className="animate-in fade-in-50">
+                  <div className="grid md:grid-cols-2 gap-6">
+                    <div className="space-y-4">
+                      <div className="space-y-2">
+                        <Label>Template: Abaixo da Expectativa Semanal</Label>
+                        <Textarea
+                          className="min-h-[160px] resize-y font-mono text-sm leading-relaxed"
+                          value={wppTemplate}
+                          onChange={(e) => setWppTemplate(e.target.value)}
+                        />
+                      </div>
+                      <div className="p-3 bg-slate-50 border rounded-lg text-xs text-slate-600 space-y-1">
+                        <p className="font-semibold">Variáveis disponíveis:</p>
+                        <p className="font-mono text-[11px]">
+                          {'{{corretor_nome}}'}, {'{{vgv_atual}}'}, {'{{meta_semanal}}'},{' '}
+                          {'{{leads_atrasados}}'}
+                        </p>
+                      </div>
+                      <Button onClick={handleTestSend} className="w-full gap-2">
+                        <Send className="w-4 h-4" /> Enviar Teste de Preenchimento
+                      </Button>
+                    </div>
+
+                    <div>
+                      <Label className="block mb-2 text-slate-500">Live Preview (Mobile)</Label>
+                      <div className="bg-[#efeae2] p-4 rounded-xl relative overflow-hidden flex flex-col h-[350px] shadow-inner border">
+                        <div className="bg-[#075e54] text-white p-3 -mx-4 -mt-4 mb-4 font-medium text-sm shadow-md flex items-center gap-3 z-10">
+                          <div className="w-8 h-8 rounded-full bg-white/20 flex items-center justify-center">
+                            <Smartphone className="w-4 h-4" />
+                          </div>
+                          <div>
+                            <div className="font-bold">Skip Bot</div>
+                            <div className="text-[10px] text-white/80">Online</div>
+                          </div>
+                        </div>
+                        <div className="flex-1 overflow-y-auto pr-1 custom-scrollbar">
+                          <div className="bg-[#dcf8c6] text-[#303030] p-3 rounded-xl rounded-tr-sm shadow-sm max-w-[90%] ml-auto text-[13px] whitespace-pre-wrap relative mb-2">
+                            {previewWpp}
+                            <span className="text-[10px] text-green-800/60 float-right mt-2 ml-2">
+                              10:42 ✓✓
+                            </span>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </TabsContent>
+
+                <TabsContent value="email" className="animate-in fade-in-50">
+                  <div className="grid md:grid-cols-2 gap-6">
+                    <div className="space-y-4">
+                      <div className="space-y-2">
+                        <Label>Assunto do Email</Label>
+                        <Input
+                          value={emailSubject}
+                          onChange={(e) => setEmailSubject(e.target.value)}
+                        />
+                      </div>
+                      <div className="space-y-2">
+                        <Label>Corpo do Email</Label>
+                        <Textarea
+                          className="min-h-[160px] resize-y font-mono text-sm leading-relaxed"
+                          value={emailTemplate}
+                          onChange={(e) => setEmailTemplate(e.target.value)}
+                        />
+                      </div>
+                      <Button onClick={handleTestSend} className="w-full gap-2">
+                        <Send className="w-4 h-4" /> Enviar Teste de Email
+                      </Button>
+                    </div>
+
+                    <div>
+                      <Label className="block mb-2 text-slate-500">
+                        Live Preview (Caixa de Entrada)
+                      </Label>
+                      <div className="border rounded-xl flex flex-col h-[350px] bg-white shadow-sm overflow-hidden">
+                        <div className="bg-slate-50 border-b p-4 flex flex-col gap-1.5 text-sm">
+                          <div className="flex items-center">
+                            <span className="text-slate-500 w-16 text-xs">De:</span>{' '}
+                            <span className="font-medium text-slate-800">
+                              Skip Alertas &lt;bot@skip.com&gt;
+                            </span>
+                          </div>
+                          <div className="flex items-center">
+                            <span className="text-slate-500 w-16 text-xs">Para:</span>{' '}
+                            <span className="text-slate-800">corretor@imobiliaria.com</span>
+                          </div>
+                          <div className="flex items-center mt-2">
+                            <span className="text-slate-500 w-16 text-xs">Assunto:</span>{' '}
+                            <span className="font-bold text-slate-900">{previewEmailSubj}</span>
+                          </div>
+                        </div>
+                        <div className="p-5 flex-1 overflow-y-auto text-[13px] whitespace-pre-wrap text-slate-700 leading-relaxed custom-scrollbar">
+                          {previewEmailBody}
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </TabsContent>
+              </Tabs>
+            </CardContent>
+          </Card>
+        </TabsContent>
+
+        <TabsContent value="dashboard" className="space-y-6 animate-in fade-in-50">
+          <div className="grid gap-4 md:grid-cols-4">
+            <Card className="shadow-sm bg-blue-50/50">
+              <CardContent className="p-4 flex flex-col items-center justify-center text-center h-full space-y-1">
+                <Send className="w-6 h-6 text-blue-500 mb-1" />
+                <p className="text-2xl font-bold">1,245</p>
+                <p className="text-xs text-slate-500 font-medium">Alertas Enviados</p>
+              </CardContent>
+            </Card>
+            <Card className="shadow-sm bg-emerald-50/50">
+              <CardContent className="p-4 flex flex-col items-center justify-center text-center h-full space-y-1">
+                <CheckCircle2 className="w-6 h-6 text-emerald-500 mb-1" />
+                <p className="text-2xl font-bold">98.5%</p>
+                <p className="text-xs text-slate-500 font-medium">Taxa de Entrega</p>
+              </CardContent>
+            </Card>
+            <Card className="shadow-sm bg-indigo-50/50">
+              <CardContent className="p-4 flex flex-col items-center justify-center text-center h-full space-y-1">
+                <Users className="w-6 h-6 text-indigo-500 mb-1" />
+                <p className="text-2xl font-bold">76.2%</p>
+                <p className="text-xs text-slate-500 font-medium">Engajamento / Abertura</p>
+              </CardContent>
+            </Card>
+            <Card className="shadow-sm bg-amber-50/50">
+              <CardContent className="p-4 flex flex-col items-center justify-center text-center h-full space-y-1">
+                <ShieldAlert className="w-6 h-6 text-amber-500 mb-1" />
+                <p className="text-2xl font-bold">12</p>
+                <p className="text-xs text-slate-500 font-medium">3º Avisos Gerados</p>
+              </CardContent>
+            </Card>
+          </div>
+
+          <Card>
+            <CardHeader>
+              <CardTitle>Últimos Disparos de Alertas</CardTitle>
+              <CardDescription>
+                Log de tentativas de entrega de notificações automatizadas.
+              </CardDescription>
+            </CardHeader>
+            <CardContent>
+              <Table>
+                <TableHeader>
+                  <TableRow>
+                    <TableHead>Canal</TableHead>
+                    <TableHead>Destinatário</TableHead>
+                    <TableHead>Gatilho / Razão</TableHead>
+                    <TableHead>Status</TableHead>
+                    <TableHead className="text-right">Quando</TableHead>
+                  </TableRow>
+                </TableHeader>
+                <TableBody>
+                  {deliveryLogs.map((log) => (
+                    <TableRow key={log.id}>
+                      <TableCell className="font-medium">
+                        <div className="flex items-center gap-2">
+                          {log.type === 'WhatsApp' ? (
+                            <Smartphone className="w-4 h-4 text-emerald-600" />
+                          ) : (
+                            <Mail className="w-4 h-4 text-blue-600" />
+                          )}
+                          {log.type}
+                        </div>
+                      </TableCell>
+                      <TableCell>{log.to}</TableCell>
+                      <TableCell className="text-slate-600">{log.trigger}</TableCell>
+                      <TableCell>
+                        <Badge
+                          variant="outline"
+                          className={
+                            log.status === 'Lido'
+                              ? 'bg-indigo-50 text-indigo-700 border-indigo-200'
+                              : log.status === 'Enviado'
+                                ? 'bg-blue-50 text-blue-700 border-blue-200'
+                                : 'bg-red-50 text-red-700 border-red-200'
+                          }
+                        >
+                          {log.status}
+                        </Badge>
+                      </TableCell>
+                      <TableCell className="text-right text-xs text-slate-500">
+                        {log.time}
+                      </TableCell>
+                    </TableRow>
+                  ))}
+                </TableBody>
+              </Table>
+            </CardContent>
+          </Card>
+        </TabsContent>
+      </Tabs>
     </div>
   )
 }
