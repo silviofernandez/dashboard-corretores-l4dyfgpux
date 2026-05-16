@@ -1,7 +1,6 @@
 import { MetricsCards } from '@/components/broker/MetricsCards'
-import { Charts } from '@/components/broker/Charts'
-import { Leaderboards } from '@/components/gamification/Leaderboards'
-
+import { LevelProgress } from '@/components/gamification/LevelProgress'
+import { SocialFeed } from '@/components/gamification/SocialFeed'
 import { ErrorBoundary } from '@/components/ErrorBoundary'
 
 export default function BrokerDashboard() {
@@ -24,10 +23,10 @@ export default function BrokerDashboard() {
         </header>
 
         <MetricsCards />
-        <Charts />
 
-        <div className="mt-8">
-          <Leaderboards />
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mt-8">
+          <LevelProgress currentLevel={5} currentPoints={8450} nextLevelPoints={10000} />
+          <SocialFeed />
         </div>
       </div>
     </ErrorBoundary>
