@@ -19,7 +19,8 @@ export class ErrorBoundary extends Component<Props, State> {
   }
 
   public componentDidCatch(error: Error, errorInfo: ErrorInfo) {
-    console.error('Uncaught error:', error, errorInfo)
+    console.error('CRITICAL UI ERROR CAUGHT BY BOUNDARY:', error.message)
+    console.error('Stack trace:', errorInfo.componentStack)
   }
 
   public render() {

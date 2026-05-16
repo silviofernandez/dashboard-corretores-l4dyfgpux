@@ -52,7 +52,7 @@ export function BrokerLayout() {
         </nav>
       </aside>
 
-      <main className="flex-1 pb-20 md:pb-0 overflow-x-hidden min-h-screen">
+      <main className="flex-1 pb-20 md:pb-0 overflow-x-hidden min-h-screen relative">
         <ErrorBoundary>
           <Outlet />
         </ErrorBoundary>

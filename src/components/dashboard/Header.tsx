@@ -1,18 +1,23 @@
-import { Hexagon, Clock } from 'lucide-react'
+import { MonitorPlay } from 'lucide-react'
 
 export function Header({ lastUpdate }: { lastUpdate: Date }) {
   return (
-    <header className="flex items-center justify-between p-4 md:px-10 md:py-6 bg-black/20 backdrop-blur-md border-b border-white/10 text-white shrink-0">
+    <header className="p-4 md:p-6 flex items-center justify-between border-b border-white/10 bg-black/20 backdrop-blur-md shrink-0">
       <div className="flex items-center gap-3">
-        <Hexagon className="w-8 h-8 md:w-12 md:h-12 fill-blue-500/20 text-blue-400" />
-        <h1 className="text-xl md:text-3xl font-black tracking-tight">
-          Ranking de <span className="text-blue-400">Corretores</span>
+        <div className="bg-blue-600 p-2.5 rounded-xl shadow-lg">
+          <MonitorPlay className="w-6 h-6 md:w-8 md:h-8 text-white" />
+        </div>
+        <h1 className="text-xl md:text-3xl font-black text-white tracking-tight">
+          Ranking <span className="text-blue-500">Ao Vivo</span>
         </h1>
       </div>
-      <div className="flex items-center gap-2 text-sm md:text-base font-bold text-slate-300">
-        <Clock className="w-4 h-4 md:w-5 md:h-5" />
-        <span className="hidden md:inline">Última atualização:</span>
-        {lastUpdate.toLocaleTimeString('pt-BR')}
+      <div className="text-right">
+        <div className="text-[10px] md:text-xs font-bold text-slate-400 uppercase tracking-widest">
+          Última atualização
+        </div>
+        <div className="text-sm md:text-lg font-medium text-slate-200 tabular-nums">
+          {lastUpdate.toLocaleTimeString('pt-BR')}
+        </div>
       </div>
     </header>
   )

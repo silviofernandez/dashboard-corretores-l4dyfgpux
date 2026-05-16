@@ -1,74 +1,74 @@
-import React, { useState, useRef, ReactNode } from 'react'
+import { ReactNode, useState, useRef } from 'react'
+import { Loader2 } from 'lucide-react'
 
-export function PullToRefresh({
-  onRefresh,
-  children,
-}: {
-  onRefresh: () => Promise<void>
+interface PullToRefreshProps {
   children: ReactNode
-}) {
+  onRefresh: () => Promise<void>
+}
+
+export function PullToRefresh({ children, onRefresh }: PullToRefreshProps) {
   const [isRefreshing, setIsRefreshing] = useState(false)
-  const [pullDistance, setPullDistance] = useState(0)
-  const startY = useRef(0)
-  const isDragging = useRef(false)
+  const [pullY, setPullY] = useState(0)
   const containerRef = useRef<HTMLDivElement>(null)
+  const startY = useRef(0)
 
   const handleTouchStart = (e: React.TouchEvent) => {
-    if (containerRef.current && containerRef.current.scrollTop > 0) return
-    startY.current = e.touches[0].clientY
-    isDragging.current = true
+    if (containerRef.current && containerRef.current.scrollTop === 0) {
+      startY.current = e.touches[0].clientY
+    }
   }
 
   const handleTouchMove = (e: React.TouchEvent) => {
-    if (!isDragging.current) return
-    const y = e.touches[0].clientY
-    const diff = y - startY.current
-    if (diff > 0 && diff < 150) {
-      setPullDistance(diff)
+    if (startY.current > 0) {
+      const y = e.touches[0].clientY - startY.current
+      if (y > 0) {
+        setPullY(Math.min(y, 100))
+      }
     }
   }
 
   const handleTouchEnd = async () => {
-    isDragging.current = false
-    if (pullDistance > 60 && !isRefreshing) {
+    if (pullY > 50 && !isRefreshing) {
       setIsRefreshing(true)
-      try {
-        await onRefresh()
-      } finally {
-        setIsRefreshing(false)
-      }
+      await onRefresh()
+      setIsRefreshing(false)
     }
-    setPullDistance(0)
+    setPullY(0)
+    startY.current = 0
   }
 
   return (
     <div
       ref={containerRef}
+      className="relative flex-1 overflow-y-auto w-full"
       onTouchStart={handleTouchStart}
       onTouchMove={handleTouchMove}
       onTouchEnd={handleTouchEnd}
-      className="flex-1 w-full flex flex-col h-full relative overflow-y-auto"
     >
       <div
-        className="absolute w-full flex justify-center transition-all duration-300 z-50 pointer-events-none"
+        className="absolute top-0 left-0 right-0 flex justify-center items-center transition-transform z-20 pointer-events-none"
         style={{
-          top: pullDistance > 0 ? `${pullDistance / 2}px` : '-40px',
-          opacity: pullDistance / 100,
+          transform: `translateY(${isRefreshing ? 20 : pullY - 40}px)`,
+          opacity: pullY / 100,
         }}
       >
-        {isRefreshing ? (
-          <div className="bg-white rounded-full p-2 shadow-md">
-            <div className="w-5 h-5 border-2 border-blue-500 border-t-transparent rounded-full animate-spin" />
-          </div>
-        ) : (
-          <div className="bg-white rounded-full p-2 shadow-md text-slate-500 text-xs font-bold">
-            ↓ Puxe
-          </div>
-        )}
+        <div className="w-10 h-10 rounded-full bg-white shadow-md flex items-center justify-center text-blue-500">
+          {isRefreshing ? (
+            <Loader2 className="w-5 h-5 animate-spin" />
+          ) : (
+            <div
+              className="w-5 h-5 rounded-full border-2 border-current border-t-transparent animate-spin"
+              style={{ animationDuration: '3s' }}
+            />
+          )}
+        </div>
       </div>
       <div
-        className="flex-1 w-full transition-transform duration-300 h-full"
-        style={{ transform: `translateY(${isRefreshing ? 50 : pullDistance / 2}px)` }}
+        style={{
+          transform: `translateY(${isRefreshing ? 40 : 0}px)`,
+          transition: pullY === 0 ? 'transform 0.3s' : 'none',
+        }}
+        className="w-full h-full"
       >
         {children}
       </div>
