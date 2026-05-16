@@ -8,6 +8,7 @@ import AdminReports from './pages/admin/Reports'
 import AdminIntegrations from './pages/admin/Integrations'
 import AdminEngine from './pages/admin/Engine'
 import AdminUsers from './pages/admin/Users'
+import AdminTrainings from './pages/admin/Trainings'
 import BrokerDashboard from './pages/broker/Dashboard'
 import TvDashboard from './pages/tv/Dashboard'
 import { AuthProvider } from './providers/AppProviders'
@@ -20,7 +21,7 @@ const App = () => {
         <Routes>
           <Route path="/" element={<Navigate to="/login" replace />} />
           <Route path="/login" element={<Login />} />
-          <Route path="/tv-dashboard" element={<TvDashboard />} />
+          <Route path="/tv-ranking" element={<TvDashboard />} />
 
           {/* Admin Routes */}
           <Route element={<ProtectedRoute allowedRoles={['admin']} />}>
@@ -29,6 +30,7 @@ const App = () => {
               <Route path="usuarios" element={<AdminUsers />} />
               <Route path="corretores" element={<AdminBrokers />} />
               <Route path="equipes" element={<AdminTeams />} />
+              <Route path="treinamentos" element={<AdminTrainings />} />
               <Route path="relatorios" element={<AdminReports />} />
               <Route path="integracoes" element={<AdminIntegrations />} />
               <Route path="motor" element={<AdminEngine />} />

@@ -1,8 +1,8 @@
-import React, { createContext, useContext, useState, useEffect } from 'react'
+import React, { createContext, useContext, useState, useEffect, ReactNode } from 'react'
 
-export type Role = 'admin' | 'broker'
+type Role = 'admin' | 'broker'
 
-export interface User {
+export type User = {
   id: string
   name: string
   email: string
@@ -10,103 +10,123 @@ export interface User {
   password?: string
 }
 
-interface AuthContextType {
+export type Training = {
+  id: string
+  theme: string
+  date: string
+  time: string
+}
+
+type AuthContextType = {
   user: User | null
+  users: User[]
   loading: boolean
+  trainings: Training[]
   login: (email: string, pass: string) => User | null
   register: (name: string, email: string, pass: string) => User
   logout: () => void
-  users: User[]
   createUser: (user: Omit<User, 'id'>) => void
+  addTraining: (t: Omit<Training, 'id'>) => void
+  deleteTraining: (id: string) => void
 }
 
 const AuthContext = createContext<AuthContextType | null>(null)
 
-export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
+export function AuthProvider({ children }: { children: ReactNode }) {
   const [user, setUser] = useState<User | null>(null)
-  const [users, setUsers] = useState<User[]>([])
+
+  const [users, setUsers] = useState<User[]>(() => {
+    const saved = localStorage.getItem('mock_users')
+    if (saved) return JSON.parse(saved)
+    return []
+  })
+
+  const [trainings, setTrainings] = useState<Training[]>(() => {
+    const saved = localStorage.getItem('mock_trainings')
+    if (saved) return JSON.parse(saved)
+    return [
+      {
+        id: 't1',
+        theme: 'Masterclass: Fidelização de Clientes',
+        date: '2026-06-10',
+        time: '14:00',
+      },
+      {
+        id: 't2',
+        theme: 'Estratégias de Follow-up e Reengajamento',
+        date: '2026-06-15',
+        time: '10:00',
+      },
+      { id: 't3', theme: 'Treinamento Intensivo de Negociação', date: '2026-06-20', time: '16:00' },
+    ]
+  })
+
   const [loading, setLoading] = useState(true)
 
   useEffect(() => {
-    const storedUsers = localStorage.getItem('app_users')
-    let parsedUsers: User[] = []
+    localStorage.setItem('mock_users', JSON.stringify(users))
+  }, [users])
 
-    if (storedUsers) {
-      parsedUsers = JSON.parse(storedUsers)
-    } else {
-      parsedUsers = [
-        {
-          id: '1',
-          name: 'Administrador Master',
-          email: 'admin@imobiliaria.com',
-          role: 'admin',
-          password: '123',
-        },
-        {
-          id: '2',
-          name: 'Corretor João',
-          email: 'joao@imobiliaria.com',
-          role: 'broker',
-          password: '123',
-        },
-      ]
-      localStorage.setItem('app_users', JSON.stringify(parsedUsers))
-    }
+  useEffect(() => {
+    localStorage.setItem('mock_trainings', JSON.stringify(trainings))
+  }, [trainings])
 
-    setUsers(parsedUsers)
-
-    const storedAuth = localStorage.getItem('app_auth_user')
-    if (storedAuth) {
-      setUser(JSON.parse(storedAuth))
-    }
-    setLoading(false)
+  useEffect(() => {
+    const timer = setTimeout(() => setLoading(false), 500)
+    return () => clearTimeout(timer)
   }, [])
 
   const login = (email: string, pass: string) => {
-    const foundUser = users.find((u) => u.email === email && u.password === pass)
-    if (foundUser) {
-      setUser(foundUser)
-      localStorage.setItem('app_auth_user', JSON.stringify(foundUser))
-      return foundUser
+    const found = users.find((u) => u.email === email && u.password === pass)
+    if (found) {
+      setUser(found)
     }
-    return null
+    return found || null
   }
 
   const register = (name: string, email: string, pass: string) => {
     const isFirstUser = users.length === 0
-    const newUser: User = {
-      id: Date.now().toString(),
-      name,
-      email,
-      password: pass,
-      role: isFirstUser ? 'admin' : 'broker',
-    }
-    const newUsers = [...users, newUser]
-    setUsers(newUsers)
-    localStorage.setItem('app_users', JSON.stringify(newUsers))
-
+    const role = isFirstUser ? 'admin' : 'broker'
+    const newUser: User = { id: Date.now().toString(), name, email, role, password: pass }
+    setUsers([...users, newUser])
     setUser(newUser)
-    localStorage.setItem('app_auth_user', JSON.stringify(newUser))
     return newUser
   }
 
-  const logout = () => {
-    setUser(null)
-    localStorage.removeItem('app_auth_user')
+  const logout = () => setUser(null)
+
+  const createUser = (u: Omit<User, 'id'>) => {
+    setUsers([...users, { ...u, id: Date.now().toString() }])
   }
 
-  const createUser = (newUser: Omit<User, 'id'>) => {
-    const u: User = { ...newUser, id: Date.now().toString() }
-    const newUsers = [...users, u]
-    setUsers(newUsers)
-    localStorage.setItem('app_users', JSON.stringify(newUsers))
+  const addTraining = (t: Omit<Training, 'id'>) => {
+    setTrainings([...trainings, { ...t, id: Date.now().toString() }])
+  }
+
+  const deleteTraining = (id: string) => {
+    setTrainings(trainings.filter((t) => t.id !== id))
   }
 
   return (
-    <AuthContext.Provider value={{ user, loading, login, register, logout, users, createUser }}>
+    <AuthContext.Provider
+      value={{
+        user,
+        users,
+        loading,
+        trainings,
+        login,
+        register,
+        logout,
+        createUser,
+        addTraining,
+        deleteTraining,
+      }}
+    >
       {children}
     </AuthContext.Provider>
   )
 }
 
-export const useAuth = () => useContext(AuthContext)
+export function useAuth() {
+  return useContext(AuthContext)
+}

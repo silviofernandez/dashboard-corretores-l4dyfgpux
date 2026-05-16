@@ -7,6 +7,7 @@ import {
   BarChart3,
   Settings,
   BrainCircuit,
+  BookOpen,
 } from 'lucide-react'
 import { Link, useLocation, useNavigate } from 'react-router-dom'
 import { LogOut } from 'lucide-react'
@@ -29,6 +30,7 @@ const navigation = [
   { name: 'Usuários', href: '/admin/usuarios', icon: Users },
   { name: 'Corretores', href: '/admin/corretores', icon: UsersRound },
   { name: 'Equipes', href: '/admin/equipes', icon: UsersRound },
+  { name: 'Treinamentos', href: '/admin/treinamentos', icon: BookOpen },
   { name: 'Integrações', href: '/admin/integracoes', icon: LinkIcon },
   { name: 'Alertas', href: '/admin/alertas', icon: Bell },
   { name: 'Relatórios', href: '/admin/relatorios', icon: BarChart3 },

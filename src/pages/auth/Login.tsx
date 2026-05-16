@@ -109,7 +109,7 @@ export default function Login() {
             type="submit"
             className="w-full mt-6 bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 rounded-xl shadow-sm transition-all duration-200"
           >
-            {isRegister ? 'Criar Conta' : 'Acessar Dashboard'}
+            {isRegister ? 'Criar Conta' : 'Entrar'}
           </Button>
 
           <div className="text-center mt-4">

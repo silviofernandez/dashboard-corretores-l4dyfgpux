@@ -2,13 +2,18 @@ import { useMemo } from 'react'
 import { ErrorBoundary } from '@/components/ErrorBoundary'
 import { useAuth } from '@/providers/AppProviders'
 import { initialBrokers } from '@/lib/mock-data'
-import { Trophy, Brain, TrendingUp, LogOut } from 'lucide-react'
+import { useState } from 'react'
+import { Trophy, Brain, TrendingUp, LogOut, Calendar, Clock } from 'lucide-react'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { useNavigate } from 'react-router-dom'
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog'
+import { useToast } from '@/hooks/use-toast'
 
 export default function BrokerDashboard() {
   const authContext = useAuth()
+  const [isTrainingsOpen, setIsTrainingsOpen] = useState(false)
+  const { toast } = useToast()
   const navigate = useNavigate()
 
   const user = useMemo(() => authContext?.user || { name: 'Corretor', email: '' }, [authContext])
@@ -37,6 +42,14 @@ export default function BrokerDashboard() {
       currency: 'BRL',
       maximumFractionDigits: 0,
     }).format(val)
+
+  const handleEnroll = (theme: string) => {
+    toast({
+      title: 'Inscrição Confirmada!',
+      description: `Você foi inscrito no treinamento: ${theme}`,
+    })
+    setIsTrainingsOpen(false)
+  }
 
   return (
     <ErrorBoundary>
@@ -155,6 +168,7 @@ export default function BrokerDashboard() {
                   <Button
                     variant="secondary"
                     className="w-full md:w-auto font-bold bg-white text-indigo-700 hover:bg-indigo-50"
+                    onClick={() => setIsTrainingsOpen(true)}
                   >
                     Inscrever-se
                   </Button>
@@ -163,6 +177,46 @@ export default function BrokerDashboard() {
             </CardContent>
           </Card>
         </main>
+
+        <Dialog open={isTrainingsOpen} onOpenChange={setIsTrainingsOpen}>
+          <DialogContent className="sm:max-w-[500px]">
+            <DialogHeader>
+              <DialogTitle>Treinamentos Disponíveis</DialogTitle>
+            </DialogHeader>
+            <div className="py-4 space-y-4">
+              {authContext?.trainings && authContext.trainings.length > 0 ? (
+                authContext.trainings.map((t) => (
+                  <div
+                    key={t.id}
+                    className="p-4 rounded-xl border border-slate-200 bg-slate-50 flex flex-col sm:flex-row sm:items-center justify-between gap-4"
+                  >
+                    <div>
+                      <h4 className="font-bold text-slate-800">{t.theme}</h4>
+                      <div className="flex items-center gap-4 mt-2 text-sm text-slate-600">
+                        <span className="flex items-center gap-1">
+                          <Calendar className="w-4 h-4" /> {t.date.split('-').reverse().join('/')}
+                        </span>
+                        <span className="flex items-center gap-1">
+                          <Clock className="w-4 h-4" /> {t.time}
+                        </span>
+                      </div>
+                    </div>
+                    <Button
+                      onClick={() => handleEnroll(t.theme)}
+                      className="w-full sm:w-auto shrink-0 bg-indigo-600 hover:bg-indigo-700"
+                    >
+                      Confirmar
+                    </Button>
+                  </div>
+                ))
+              ) : (
+                <p className="text-slate-500 text-center py-6">
+                  Nenhum treinamento agendado no momento.
+                </p>
+              )}
+            </div>
+          </DialogContent>
+        </Dialog>
       </div>
     </ErrorBoundary>
   )
