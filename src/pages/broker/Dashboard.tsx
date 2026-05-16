@@ -1,44 +1,31 @@
 import { MetricsCards } from '@/components/broker/MetricsCards'
-import { LeadsPipeline } from '@/components/broker/LeadsPipeline'
 import { Charts } from '@/components/broker/Charts'
-import { PullToRefresh } from '@/components/ui/pull-to-refresh'
-import { useState } from 'react'
-import { toast } from 'sonner'
+import { Leaderboards } from '@/components/gamification/Leaderboards'
 
 export default function BrokerDashboard() {
-  const [refreshKey, setRefreshKey] = useState(0)
-
-  const handleRefresh = async () => {
-    await new Promise((resolve) => setTimeout(resolve, 1500))
-    setRefreshKey((prev) => prev + 1)
-    if ('vibrate' in navigator) navigator.vibrate([30, 50, 30])
-    toast.success('Dashboard atualizado com sucesso!')
-  }
-
   return (
-    <PullToRefresh onRefresh={handleRefresh}>
-      <div key={refreshKey} className="flex flex-col gap-6 md:gap-8 min-h-[calc(100vh-10rem)]">
-        <header>
-          <h1
-            className="text-2xl md:text-3xl font-black text-slate-800 tracking-tight"
-            tabIndex={0}
-          >
-            Seu Desempenho
-          </h1>
-          <p className="text-slate-500 font-medium text-sm md:text-base mt-1">
-            Confira como estão suas metas e vendas este mês.
-          </p>
-        </header>
-
-        <div className="flex flex-col gap-6 w-full max-w-full overflow-x-hidden">
-          <MetricsCards />
-          <LeadsPipeline />
-
-          <div className="touch-pan-y" style={{ touchAction: 'pan-y pinch-zoom' }}>
-            <Charts />
+    <div className="p-4 md:p-8 max-w-7xl mx-auto space-y-6 md:space-y-8 animate-fade-in-up">
+      <header className="mb-2 md:mb-4 bg-white p-6 rounded-2xl shadow-sm border border-slate-100">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+          <div>
+            <h2 className="text-2xl md:text-3xl font-black text-slate-800 tracking-tight">
+              Olá, Ana Paula 👋
+            </h2>
+            <p className="text-slate-500 font-medium mt-1">Seu resumo de performance hoje.</p>
+          </div>
+          <div className="flex items-center gap-4 bg-slate-50 px-4 py-2 rounded-xl border border-slate-100 w-fit">
+            <div className="text-sm font-bold text-slate-500">Score Atual:</div>
+            <div className="text-xl font-black text-blue-600">8.450 pts</div>
           </div>
         </div>
+      </header>
+
+      <MetricsCards />
+      <Charts />
+
+      <div className="mt-8">
+        <Leaderboards />
       </div>
-    </PullToRefresh>
+    </div>
   )
 }

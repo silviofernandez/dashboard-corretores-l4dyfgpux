@@ -122,6 +122,11 @@ export function RankingList({ brokers: initialBrokers }: { brokers: Broker[] }) 
 
       <PullToRefresh onRefresh={handleRefresh}>
         <div className="flex-1 flex flex-col gap-3 lg:gap-4 pb-4">
+          {brokers.length === 0 && (
+            <div className="flex items-center justify-center h-48 text-white/50 font-bold text-xl bg-white/5 rounded-xl border border-dashed border-white/10 m-4">
+              Nenhum corretor encontrado no ranking.
+            </div>
+          )}
           {brokers.map((broker, idx) => (
             <SwipeableItem
               key={`${broker.id}-${broker.sales}`}

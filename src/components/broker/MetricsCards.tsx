@@ -3,6 +3,13 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
 
 export function MetricsCards() {
+  const data = {
+    vgv: { current: 12500000, target: 16600000, pct: 75 },
+    sales: { current: 45, target: 60 },
+    ranking: { pos: 1, trend: 'up', val: 2 },
+    privileges: ['💎 3x1 Diamante', 'Clube VIP', 'Padrão'],
+  }
+
   return (
     <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
       <Card className="border-0 shadow-sm hover:shadow-md transition-shadow rounded-2xl">
@@ -32,12 +39,16 @@ export function MetricsCards() {
               />
             </svg>
             <div className="absolute flex items-center justify-center text-sm font-black text-slate-700">
-              75%
+              {data.vgv.pct}%
             </div>
           </div>
           <div>
-            <div className="text-2xl font-black text-slate-800 tracking-tight">R$ 12.5M</div>
-            <p className="text-xs font-bold text-slate-400 mt-1">Meta: R$ 16.6M</p>
+            <div className="text-2xl font-black text-slate-800 tracking-tight">
+              R$ {(data.vgv.current / 1000000).toFixed(1)}M
+            </div>
+            <p className="text-xs font-bold text-slate-400 mt-1">
+              Meta: R$ {(data.vgv.target / 1000000).toFixed(1)}M
+            </p>
           </div>
         </CardContent>
       </Card>
@@ -50,13 +61,20 @@ export function MetricsCards() {
         </CardHeader>
         <CardContent className="pt-2">
           <div className="flex items-baseline gap-2">
-            <span className="text-5xl font-black text-slate-800 tracking-tighter">45</span>
-            <span className="text-xl font-bold text-slate-300">/ 60</span>
+            <span className="text-5xl font-black text-slate-800 tracking-tighter">
+              {data.sales.current}
+            </span>
+            <span className="text-xl font-bold text-slate-300">/ {data.sales.target}</span>
           </div>
           <div className="w-full bg-slate-100 h-2 rounded-full mt-3 overflow-hidden">
-            <div className="bg-emerald-500 h-full rounded-full w-[75%]" />
+            <div
+              className="bg-emerald-500 h-full rounded-full"
+              style={{ width: `${(data.sales.current / data.sales.target) * 100}%` }}
+            />
           </div>
-          <p className="text-xs font-bold text-slate-400 mt-2">15 vendas restantes</p>
+          <p className="text-xs font-bold text-slate-400 mt-2">
+            {data.sales.target - data.sales.current} vendas restantes
+          </p>
         </CardContent>
       </Card>
 
@@ -68,12 +86,12 @@ export function MetricsCards() {
         </CardHeader>
         <CardContent className="flex items-center gap-5 pt-2">
           <div className="text-6xl font-black text-amber-500 drop-shadow-sm tracking-tighter">
-            1º
+            {data.ranking.pos}º
           </div>
           <div className="flex flex-col gap-1">
             <div className="flex items-center text-emerald-600 text-xs font-black bg-emerald-50 px-2.5 py-1.5 rounded-lg w-fit">
               <ArrowUp className="w-3 h-3 mr-1" strokeWidth={4} />
-              Subiu 2
+              Subiu {data.ranking.val}
             </div>
             <p className="text-xs font-bold text-slate-400">Última semana</p>
           </div>

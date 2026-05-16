@@ -49,6 +49,14 @@ const feed = [
 ]
 
 export function SocialFeed() {
+  if (!feed || feed.length === 0) {
+    return (
+      <div className="p-8 text-center text-slate-500 font-bold bg-slate-50 rounded-xl border border-dashed border-slate-200">
+        Nenhuma atividade recente.
+      </div>
+    )
+  }
+
   return (
     <div className="space-y-4">
       {feed.map((item) => {

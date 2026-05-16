@@ -40,6 +40,13 @@ const data = {
       avatar: 'https://img.usecurling.com/ppl/thumbnail?gender=male&seed=2',
       trend: 'up',
     },
+    {
+      id: 5,
+      name: 'Fernando Lima',
+      pts: 7100,
+      avatar: 'https://img.usecurling.com/ppl/thumbnail?gender=male&seed=5',
+      trend: 'down',
+    },
   ],
   engagement: [
     {
@@ -70,6 +77,13 @@ const data = {
       avatar: 'https://img.usecurling.com/ppl/thumbnail?gender=female&seed=3',
       trend: 'up',
     },
+    {
+      id: 5,
+      name: 'Roberto Alves',
+      pts: 580,
+      avatar: 'https://img.usecurling.com/ppl/thumbnail?gender=male&seed=4',
+      trend: 'same',
+    },
   ],
   growth: [
     {
@@ -99,6 +113,13 @@ const data = {
       pts: '+5%',
       avatar: 'https://img.usecurling.com/ppl/thumbnail?gender=female&seed=1',
       trend: 'down',
+    },
+    {
+      id: 5,
+      name: 'Fernando Lima',
+      pts: '+2%',
+      avatar: 'https://img.usecurling.com/ppl/thumbnail?gender=male&seed=5',
+      trend: 'same',
     },
   ],
 }
@@ -140,58 +161,66 @@ export function Leaderboards() {
       </CardHeader>
       <CardContent>
         <div className="space-y-3">
-          {data[category].map((user, idx) => (
-            <div
-              key={user.id}
-              className={`flex items-center gap-3 md:gap-4 p-3 rounded-xl transition-all ${
-                idx === 0
-                  ? 'bg-gradient-to-r from-amber-50 to-white border border-amber-200 shadow-sm'
-                  : 'bg-white border border-slate-100 hover:border-slate-200 hover:bg-slate-50'
-              }`}
-            >
+          {data[category]?.length > 0 ? (
+            data[category].map((user, idx) => (
               <div
-                className={`flex items-center justify-center w-8 font-black text-lg ${
+                key={user.id}
+                className={`flex items-center gap-3 md:gap-4 p-3 rounded-xl transition-all ${
                   idx === 0
-                    ? 'text-amber-500'
-                    : idx === 1
-                      ? 'text-slate-400'
-                      : idx === 2
-                        ? 'text-orange-400'
-                        : 'text-slate-300'
+                    ? 'bg-gradient-to-r from-amber-50 to-white border border-amber-200 shadow-sm'
+                    : 'bg-white border border-slate-100 hover:border-slate-200 hover:bg-slate-50'
                 }`}
               >
-                {idx === 0 ? <Crown className="w-6 h-6 fill-amber-400" /> : `${idx + 1}º`}
-              </div>
-              <Avatar
-                className={`w-10 h-10 md:w-12 md:h-12 border-2 shadow-sm ${
-                  idx === 0 ? 'border-amber-400' : 'border-white'
-                }`}
-              >
-                <AvatarImage src={user.avatar} />
-                <AvatarFallback>{user.name[0]}</AvatarFallback>
-              </Avatar>
-              <div className="flex-1 min-w-0">
-                <div className="font-bold text-slate-800 truncate leading-tight">{user.name}</div>
-                {idx === 0 && (
-                  <div className="text-[10px] font-bold text-amber-600 uppercase">Líder Atual</div>
-                )}
-              </div>
-              <div className="flex items-center gap-3 shrink-0 bg-slate-50/50 px-3 py-1.5 rounded-lg border border-slate-100/50">
-                <span className="font-mono font-black text-slate-700 md:text-lg">{user.pts}</span>
-                <div className="w-5 flex justify-center bg-white rounded-full shadow-sm p-0.5">
-                  {user.trend === 'up' && (
-                    <ArrowUp className="w-3.5 h-3.5 text-emerald-500" strokeWidth={3} />
-                  )}
-                  {user.trend === 'down' && (
-                    <ArrowDown className="w-3.5 h-3.5 text-rose-500" strokeWidth={3} />
-                  )}
-                  {user.trend === 'same' && (
-                    <Minus className="w-3.5 h-3.5 text-slate-400" strokeWidth={3} />
+                <div
+                  className={`flex items-center justify-center w-8 font-black text-lg ${
+                    idx === 0
+                      ? 'text-amber-500'
+                      : idx === 1
+                        ? 'text-slate-400'
+                        : idx === 2
+                          ? 'text-orange-400'
+                          : 'text-slate-300'
+                  }`}
+                >
+                  {idx === 0 ? <Crown className="w-6 h-6 fill-amber-400" /> : `${idx + 1}º`}
+                </div>
+                <Avatar
+                  className={`w-10 h-10 md:w-12 md:h-12 border-2 shadow-sm ${
+                    idx === 0 ? 'border-amber-400' : 'border-white'
+                  }`}
+                >
+                  <AvatarImage src={user.avatar} />
+                  <AvatarFallback>{user.name[0]}</AvatarFallback>
+                </Avatar>
+                <div className="flex-1 min-w-0">
+                  <div className="font-bold text-slate-800 truncate leading-tight">{user.name}</div>
+                  {idx === 0 && (
+                    <div className="text-[10px] font-bold text-amber-600 uppercase">
+                      Líder Atual
+                    </div>
                   )}
                 </div>
+                <div className="flex items-center gap-3 shrink-0 bg-slate-50/50 px-3 py-1.5 rounded-lg border border-slate-100/50">
+                  <span className="font-mono font-black text-slate-700 md:text-lg">{user.pts}</span>
+                  <div className="w-5 flex justify-center bg-white rounded-full shadow-sm p-0.5">
+                    {user.trend === 'up' && (
+                      <ArrowUp className="w-3.5 h-3.5 text-emerald-500" strokeWidth={3} />
+                    )}
+                    {user.trend === 'down' && (
+                      <ArrowDown className="w-3.5 h-3.5 text-rose-500" strokeWidth={3} />
+                    )}
+                    {user.trend === 'same' && (
+                      <Minus className="w-3.5 h-3.5 text-slate-400" strokeWidth={3} />
+                    )}
+                  </div>
+                </div>
               </div>
+            ))
+          ) : (
+            <div className="p-8 text-center text-slate-500 font-bold bg-slate-50 rounded-xl border border-dashed border-slate-200">
+              Nenhum dado disponível no momento.
             </div>
-          ))}
+          )}
         </div>
 
         <div className="mt-8 pt-6 border-t border-slate-100">

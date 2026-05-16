@@ -1,4 +1,4 @@
-import { ReactNode, useRef, useState } from 'react'
+import React, { useState, useRef, ReactNode } from 'react'
 import { cn } from '@/lib/utils'
 
 interface SwipeableItemProps {
@@ -18,52 +18,50 @@ export function SwipeableItem({
   onSwipeRight,
   className,
 }: SwipeableItemProps) {
-  const [translateX, setTranslateX] = useState(0)
-  const [isDragging, setIsDragging] = useState(false)
+  const [offset, setOffset] = useState(0)
   const startX = useRef(0)
   const currentX = useRef(0)
+  const isDragging = useRef(false)
 
   const handleTouchStart = (e: React.TouchEvent) => {
     startX.current = e.touches[0].clientX
-    setIsDragging(true)
+    isDragging.current = true
   }
 
   const handleTouchMove = (e: React.TouchEvent) => {
-    if (!isDragging) return
-    const diff = e.touches[0].clientX - startX.current
-    const moveX = Math.sign(diff) * Math.min(Math.abs(diff), 100)
+    if (!isDragging.current) return
+    currentX.current = e.touches[0].clientX
+    const diff = currentX.current - startX.current
 
-    if ((!leftAction && moveX > 0) || (!rightAction && moveX < 0)) return
+    if (!leftAction && diff > 0) return
+    if (!rightAction && diff < 0) return
 
-    setTranslateX(moveX)
-    currentX.current = moveX
+    if (Math.abs(diff) < 120) {
+      setOffset(diff)
+    }
   }
 
   const handleTouchEnd = () => {
-    setIsDragging(false)
-    if (currentX.current > 60 && leftAction && onSwipeLeft) {
-      onSwipeLeft()
-    } else if (currentX.current < -60 && rightAction && onSwipeRight) {
+    isDragging.current = false
+    if (offset > 60 && onSwipeRight && leftAction) {
       onSwipeRight()
+    } else if (offset < -60 && onSwipeLeft && rightAction) {
+      onSwipeLeft()
     }
-    setTranslateX(0)
-    currentX.current = 0
+    setOffset(0)
   }
 
   return (
-    <div className={cn('relative overflow-hidden cursor-pointer', className)}>
-      {leftAction && translateX > 0 && (
-        <div className="absolute inset-y-0 left-0 w-full flex items-center">{leftAction}</div>
-      )}
-      {rightAction && translateX < 0 && (
-        <div className="absolute inset-y-0 right-0 w-full flex items-center">{rightAction}</div>
-      )}
+    <div className={cn('relative overflow-hidden group touch-pan-y', className)}>
+      <div className="absolute inset-y-0 left-0 flex items-center justify-start w-full -z-10 bg-emerald-500">
+        {leftAction}
+      </div>
+      <div className="absolute inset-y-0 right-0 flex items-center justify-end w-full -z-10 bg-rose-500">
+        {rightAction}
+      </div>
       <div
-        className="relative z-10 transition-transform duration-200"
-        style={{
-          transform: `translateX(${translateX}px)`,
-          touchAction: 'pan-y',
-        }}
+        className="transition-transform duration-200 ease-out z-10 w-full h-full bg-transparent"
+        style={{ transform: `translateX(${offset}px)` }}
         onTouchStart={handleTouchStart}
         onTouchMove={handleTouchMove}
         onTouchEnd={handleTouchEnd}

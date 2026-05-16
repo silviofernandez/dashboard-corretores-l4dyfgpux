@@ -40,6 +40,10 @@ const BENCHMARK_DATA = [
 ]
 
 export function Charts() {
+  const safeWeeklyData = WEEKLY_DATA || []
+  const safeMonthlyData = MONTHLY_DATA || []
+  const safeBenchmarkData = BENCHMARK_DATA || []
+
   return (
     <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
       <Card className="lg:col-span-2 border-0 shadow-sm rounded-2xl">
@@ -54,7 +58,10 @@ export function Charts() {
             className="h-[280px] w-full"
           >
             <ResponsiveContainer width="100%" height="100%">
-              <LineChart data={WEEKLY_DATA} margin={{ top: 10, right: 10, left: -20, bottom: 0 }}>
+              <LineChart
+                data={safeWeeklyData}
+                margin={{ top: 10, right: 10, left: -20, bottom: 0 }}
+              >
                 <CartesianGrid strokeDasharray="4 4" vertical={false} stroke="#f1f5f9" />
                 <XAxis
                   dataKey="name"
@@ -102,7 +109,7 @@ export function Charts() {
             >
               <ResponsiveContainer width="100%" height="100%">
                 <BarChart
-                  data={MONTHLY_DATA}
+                  data={safeMonthlyData}
                   layout="vertical"
                   margin={{ top: 0, right: 20, left: -10, bottom: 0 }}
                 >
@@ -149,7 +156,7 @@ export function Charts() {
             >
               <ResponsiveContainer width="100%" height="100%">
                 <RadarChart
-                  data={BENCHMARK_DATA}
+                  data={safeBenchmarkData}
                   margin={{ top: 0, right: 30, bottom: 0, left: 30 }}
                 >
                   <PolarGrid stroke="#e2e8f0" />

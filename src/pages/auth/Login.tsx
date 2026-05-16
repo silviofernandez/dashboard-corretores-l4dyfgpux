@@ -1,67 +1,21 @@
-import { Button } from '@/components/ui/button'
-import { Input } from '@/components/ui/input'
-import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card'
-import { Hexagon } from 'lucide-react'
-import { useNavigate } from 'react-router-dom'
-import { useState } from 'react'
+import { Target } from 'lucide-react'
 
 export default function Login() {
-  const navigate = useNavigate()
-  const [loading, setLoading] = useState(false)
-
-  const handleLogin = (e: React.FormEvent) => {
-    e.preventDefault()
-    setLoading(true)
-    setTimeout(() => {
-      navigate('/dashboard')
-    }, 1000)
-  }
-
   return (
-    <div className="min-h-screen bg-slate-50 flex flex-col items-center justify-center p-4">
-      <div className="w-full max-w-md animate-fade-in-up">
-        <div className="flex flex-col items-center justify-center gap-2 mb-8 text-blue-600">
-          <Hexagon className="w-12 h-12 fill-blue-600/10" />
-          <h1 className="text-3xl font-black tracking-tight">BrokerTop</h1>
+    <div className="flex h-screen items-center justify-center bg-slate-50 font-sans p-4">
+      <div className="text-center space-y-6 max-w-sm w-full bg-white p-8 rounded-2xl shadow-sm border border-slate-100">
+        <div className="bg-blue-50 w-16 h-16 rounded-2xl flex items-center justify-center mx-auto shadow-sm">
+          <Target className="w-8 h-8 text-blue-600" />
         </div>
-
-        <Card className="border-0 shadow-lg rounded-2xl">
-          <CardHeader className="text-center pb-6">
-            <CardTitle className="text-2xl font-black">Acessar Conta</CardTitle>
-            <CardDescription className="font-medium">
-              Entre com suas credenciais de corretor.
-            </CardDescription>
-          </CardHeader>
-          <CardContent>
-            <form onSubmit={handleLogin} className="space-y-4">
-              <div className="space-y-2">
-                <Input
-                  type="email"
-                  placeholder="Email corporativo"
-                  required
-                  defaultValue="ricardo@imobiliaria.com"
-                  className="h-12 px-4 rounded-xl font-medium"
-                />
-              </div>
-              <div className="space-y-2">
-                <Input
-                  type="password"
-                  placeholder="Senha"
-                  required
-                  defaultValue="password123"
-                  className="h-12 px-4 rounded-xl font-medium"
-                />
-              </div>
-              <Button
-                type="submit"
-                className="w-full h-12 rounded-xl font-bold text-base mt-2"
-                disabled={loading}
-              >
-                {loading ? 'Entrando...' : 'Entrar no Dashboard'}
-              </Button>
-            </form>
-          </CardContent>
-        </Card>
+        <div>
+          <h1 className="text-2xl font-black text-slate-800 tracking-tight">Login</h1>
+          <p className="text-slate-500 font-medium mt-2">
+            O módulo de autenticação está em desenvolvimento para conexão futura.
+          </p>
+        </div>
+        <button className="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 px-4 rounded-xl transition-colors shadow-md shadow-blue-600/20">
+          Entrar no Dashboard
+        </button>
       </div>
     </div>
   )

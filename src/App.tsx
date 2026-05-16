@@ -41,12 +41,12 @@ const App = () => {
         <Suspense fallback={<PageLoader />}>
           <Routes>
             <Route element={<Layout />}>
-              <Route path="/" element={<Index />} />
+              <Route path="/tv" element={<Index />} />
             </Route>
 
             <Route path="/login" element={<Login />} />
 
-            <Route path="/dashboard" element={<BrokerLayout />}>
+            <Route path="/" element={<BrokerLayout />}>
               <Route index element={<BrokerDashboard />} />
               <Route
                 path="historico"
@@ -74,6 +74,8 @@ const App = () => {
                 }
               />
             </Route>
+
+            <Route path="/dashboard/*" element={<Navigate to="/" replace />} />
 
             <Route path="*" element={<NotFound />} />
           </Routes>
