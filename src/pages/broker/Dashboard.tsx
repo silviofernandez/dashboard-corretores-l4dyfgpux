@@ -1,135 +1,168 @@
+import { useMemo } from 'react'
 import { ErrorBoundary } from '@/components/ErrorBoundary'
 import { useAuth } from '@/providers/AppProviders'
-import { useMemo } from 'react'
-
-// Component Integrity: Providing integrated robust components that replace external imports
-// to guarantee a solid render avoiding module resolution crashes.
-
-const SafeMetricsCards = () => {
-  const items = [
-    { label: 'Vendas Mês', value: '12', color: 'bg-green-500' },
-    { label: 'Visitas Agendadas', value: '8', color: 'bg-blue-500' },
-    { label: 'Propostas Ativas', value: '3', color: 'bg-orange-500' },
-  ]
-
-  return (
-    <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-      {items.map((item, idx) => (
-        <div
-          key={idx}
-          className="bg-white p-6 rounded-2xl shadow-sm border border-slate-100 flex items-center gap-4 transition-transform hover:scale-[1.02]"
-        >
-          <div className={`w-3 h-12 rounded-full ${item.color}`}></div>
-          <div>
-            <p className="text-sm font-bold text-slate-500 uppercase tracking-wider">
-              {item.label}
-            </p>
-            <p className="text-3xl font-black text-slate-800">{item.value}</p>
-          </div>
-        </div>
-      ))}
-    </div>
-  )
-}
-
-const SafeLevelProgress = ({ currentLevel = 1, currentPoints = 0, nextLevelPoints = 100 }: any) => {
-  const percentage = Math.min(100, Math.max(0, (currentPoints / nextLevelPoints) * 100))
-
-  return (
-    <div className="bg-white p-6 rounded-2xl shadow-sm border border-slate-100 flex flex-col justify-center min-h-[200px]">
-      <div className="flex justify-between items-end mb-4">
-        <h3 className="text-lg font-black text-slate-800">Progresso Nível {currentLevel}</h3>
-        <span className="text-sm font-bold text-blue-600 bg-blue-50 px-3 py-1 rounded-full">
-          {Math.round(percentage)}%
-        </span>
-      </div>
-      <div className="w-full bg-slate-100 rounded-full h-6 overflow-hidden relative shadow-inner">
-        <div
-          className="bg-blue-600 h-full transition-all duration-1000 ease-out absolute left-0 top-0"
-          style={{ width: `${percentage}%` }}
-        ></div>
-      </div>
-      <p className="text-sm text-slate-500 mt-4 font-medium text-right">
-        Faltam <strong className="text-slate-800">{nextLevelPoints - currentPoints} pts</strong>{' '}
-        para o Nível {currentLevel + 1}
-      </p>
-    </div>
-  )
-}
-
-const SafeSocialFeed = () => {
-  const updates = [
-    { name: 'João Silva', action: 'fechou uma venda', time: 'Há 5 min' },
-    { name: 'Maria Santos', action: 'subiu de nível', time: 'Há 20 min' },
-    { name: 'Você', action: 'agendou uma visita', time: 'Há 1 hora' },
-  ]
-
-  return (
-    <div className="bg-white p-6 rounded-2xl shadow-sm border border-slate-100 min-h-[200px] flex flex-col">
-      <h3 className="text-lg font-black text-slate-800 mb-4 flex items-center gap-2">
-        <span className="w-2 h-2 rounded-full bg-green-500 animate-pulse"></span>
-        Feed em Tempo Real
-      </h3>
-      <div className="space-y-4 flex-1">
-        {updates.map((update, idx) => (
-          <div
-            key={idx}
-            className="flex gap-4 items-center p-3 rounded-xl hover:bg-slate-50 transition-colors"
-          >
-            <div className="w-10 h-10 rounded-full bg-blue-100 text-blue-600 flex items-center justify-center font-bold">
-              {update.name.charAt(0)}
-            </div>
-            <div className="flex-1">
-              <p className="text-sm text-slate-800 font-medium leading-tight">
-                <strong>{update.name}</strong> {update.action}
-              </p>
-              <p className="text-xs text-slate-400 mt-1 font-medium">{update.time}</p>
-            </div>
-          </div>
-        ))}
-      </div>
-    </div>
-  )
-}
+import { initialBrokers } from '@/lib/mock-data'
+import { Trophy, Brain, TrendingUp, LogOut } from 'lucide-react'
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
+import { Button } from '@/components/ui/button'
+import { useNavigate } from 'react-router-dom'
 
 export default function BrokerDashboard() {
   const authContext = useAuth()
+  const navigate = useNavigate()
 
-  // Logic Guard: Safely default to fallback object if context resolution failed or user isn't populated
-  const user = useMemo(() => authContext?.user || { name: 'Corretor' }, [authContext])
+  const user = useMemo(() => authContext?.user || { name: 'Corretor', email: '' }, [authContext])
+
+  const handleLogout = () => {
+    if (authContext) {
+      authContext.logout()
+    }
+    navigate('/login')
+  }
+
+  const brokerProfile = useMemo(() => {
+    const match = initialBrokers.find((b) => b.email === user.email || b.name === user.name)
+    return match || initialBrokers[0]
+  }, [user])
+
+  const ranking = useMemo(() => {
+    const sorted = [...initialBrokers].sort((a, b) => b.vgv - a.vgv)
+    const position = sorted.findIndex((b) => b.id === brokerProfile.id) + 1
+    return position > 0 ? position : '-'
+  }, [brokerProfile])
+
+  const formatCurrency = (val: number) =>
+    new Intl.NumberFormat('pt-BR', {
+      style: 'currency',
+      currency: 'BRL',
+      maximumFractionDigits: 0,
+    }).format(val)
 
   return (
     <ErrorBoundary>
-      <div className="p-4 md:p-8 max-w-7xl mx-auto space-y-6 md:space-y-8 animate-fade-in-up">
-        {/* CSS Visibility Audit: Replaced overlapping elements logic with fixed relative isolation */}
-        <header className="mb-2 md:mb-4 bg-white p-6 rounded-2xl shadow-sm border border-slate-100 relative overflow-hidden isolate z-0">
-          <div className="absolute right-0 top-0 w-64 h-64 bg-blue-50 rounded-full blur-3xl -z-10 opacity-60 transform translate-x-1/2 -translate-y-1/2"></div>
-
-          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 z-10">
-            <div>
-              <h2 className="text-2xl md:text-3xl font-black text-slate-800 tracking-tight">
-                Olá, {user.name} 👋
-              </h2>
-              <p className="text-slate-500 font-medium mt-1">Seu resumo de performance hoje.</p>
-            </div>
-            <div className="flex items-center gap-4 bg-white px-5 py-3 rounded-xl border border-blue-100 shadow-sm w-fit group cursor-default hover:border-blue-300 transition-colors">
-              <div className="text-sm font-bold text-slate-500 group-hover:text-blue-600 transition-colors">
-                Score Atual:
-              </div>
-              <div className="text-2xl font-black text-blue-600">
-                8.450 <span className="text-sm text-blue-400 font-bold">pts</span>
-              </div>
-            </div>
+      <div className="min-h-screen bg-slate-50 flex flex-col">
+        <header className="bg-white border-b px-4 md:px-8 py-4 flex items-center justify-between sticky top-0 z-10">
+          <div className="flex items-center gap-2">
+            <Trophy className="text-blue-600 w-6 h-6" />
+            <h1 className="text-xl font-bold text-slate-800">Meu Painel</h1>
           </div>
+          <Button
+            variant="ghost"
+            onClick={handleLogout}
+            className="text-slate-500 hover:text-red-600"
+          >
+            <LogOut className="w-4 h-4 mr-2" /> Sair
+          </Button>
         </header>
 
-        {/* Stable block components initialized natively */}
-        <SafeMetricsCards />
+        <main className="flex-1 p-4 md:p-8 max-w-5xl mx-auto w-full space-y-6 md:space-y-8 animate-fade-in-up">
+          <div className="flex flex-col md:flex-row items-center gap-6 bg-white p-6 md:p-8 rounded-3xl shadow-sm border border-slate-200">
+            <div className="w-24 h-24 md:w-32 md:h-32 rounded-full bg-blue-100 flex items-center justify-center text-blue-600 text-4xl font-black border-4 border-blue-50 shrink-0">
+              {ranking}º
+            </div>
+            <div className="flex-1 text-center md:text-left">
+              <h2 className="text-2xl md:text-3xl font-black text-slate-800 mb-2">
+                Sua Posição no Ranking
+              </h2>
+              <p className="text-slate-500 text-lg">
+                Parabéns pelo esforço, <strong>{user.name}</strong>! Continue focado para subir no
+                ranking.
+              </p>
+            </div>
+            <div className="text-center bg-slate-50 p-4 rounded-2xl w-full md:w-auto">
+              <p className="text-sm font-bold text-slate-500 uppercase mb-1">VGV Total</p>
+              <p className="text-3xl font-black text-emerald-600">
+                {formatCurrency(brokerProfile.vgv)}
+              </p>
+            </div>
+          </div>
 
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mt-8">
-          <SafeLevelProgress currentLevel={5} currentPoints={8450} nextLevelPoints={10000} />
-          <SafeSocialFeed />
-        </div>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+            <Card className="shadow-sm border-slate-200">
+              <CardHeader className="pb-2">
+                <CardTitle className="text-sm font-bold text-slate-500 uppercase">
+                  Leads Gerados
+                </CardTitle>
+              </CardHeader>
+              <CardContent>
+                <p className="text-4xl font-black text-slate-800">{brokerProfile.leads}</p>
+              </CardContent>
+            </Card>
+            <Card className="shadow-sm border-slate-200">
+              <CardHeader className="pb-2">
+                <CardTitle className="text-sm font-bold text-slate-500 uppercase">
+                  Vendas Fechadas
+                </CardTitle>
+              </CardHeader>
+              <CardContent>
+                <p className="text-4xl font-black text-slate-800">{brokerProfile.sales}</p>
+              </CardContent>
+            </Card>
+            <Card className="shadow-sm border-slate-200">
+              <CardHeader className="pb-2">
+                <CardTitle className="text-sm font-bold text-slate-500 uppercase">
+                  Conversão
+                </CardTitle>
+              </CardHeader>
+              <CardContent>
+                <p className="text-4xl font-black text-slate-800">
+                  {brokerProfile.conversionRate}%
+                </p>
+              </CardContent>
+            </Card>
+          </div>
+
+          <Card className="border-indigo-100 bg-gradient-to-br from-indigo-50 to-white shadow-sm overflow-hidden">
+            <div className="h-2 w-full bg-indigo-500"></div>
+            <CardHeader>
+              <CardTitle className="flex items-center gap-2 text-indigo-900 text-xl">
+                <Brain className="w-6 h-6 text-indigo-600" /> Dicas de Melhoria por IA
+              </CardTitle>
+            </CardHeader>
+            <CardContent className="space-y-6">
+              <div>
+                <h4 className="font-bold text-slate-800 mb-2">Análise de Performance</h4>
+                <p className="text-slate-600 leading-relaxed bg-white p-4 rounded-xl border border-indigo-100/50 shadow-sm">
+                  {brokerProfile.aiAnalysis}
+                </p>
+              </div>
+
+              {brokerProfile.deficiencies.length > 0 && (
+                <div>
+                  <h4 className="font-bold text-slate-800 mb-2">Pontos de Atenção</h4>
+                  <ul className="space-y-2">
+                    {brokerProfile.deficiencies.map((def, i) => (
+                      <li
+                        key={i}
+                        className="flex items-start gap-3 bg-white p-3 rounded-lg border border-rose-100"
+                      >
+                        <TrendingUp className="w-5 h-5 text-rose-500 mt-0.5 shrink-0" />
+                        <span className="text-slate-700">{def}</span>
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              )}
+
+              {brokerProfile.trainingRecommendation && (
+                <div className="bg-indigo-600 text-white p-6 rounded-2xl flex flex-col md:flex-row items-center justify-between gap-4">
+                  <div>
+                    <h4 className="font-bold text-indigo-100 uppercase text-xs mb-1">
+                      Recomendação de Treinamento
+                    </h4>
+                    <p className="font-bold text-lg">{brokerProfile.trainingRecommendation}</p>
+                  </div>
+                  <Button
+                    variant="secondary"
+                    className="w-full md:w-auto font-bold bg-white text-indigo-700 hover:bg-indigo-50"
+                  >
+                    Inscrever-se
+                  </Button>
+                </div>
+              )}
+            </CardContent>
+          </Card>
+        </main>
       </div>
     </ErrorBoundary>
   )

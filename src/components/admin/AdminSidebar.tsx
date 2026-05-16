@@ -26,7 +26,8 @@ import { useAuth } from '@/providers/AppProviders'
 
 const navigation = [
   { name: 'Dashboard', href: '/admin', icon: LayoutDashboard },
-  { name: 'Corretores', href: '/admin/corretores', icon: Users },
+  { name: 'Usuários', href: '/admin/usuarios', icon: Users },
+  { name: 'Corretores', href: '/admin/corretores', icon: UsersRound },
   { name: 'Equipes', href: '/admin/equipes', icon: UsersRound },
   { name: 'Integrações', href: '/admin/integracoes', icon: LinkIcon },
   { name: 'Alertas', href: '/admin/alertas', icon: Bell },

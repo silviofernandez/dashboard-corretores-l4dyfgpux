@@ -2,7 +2,7 @@ import { Navigate, Outlet, useLocation } from 'react-router-dom'
 import { useAuth } from '@/providers/AppProviders'
 import { ErrorBoundary } from '@/components/ErrorBoundary'
 
-export function ProtectedRoute() {
+export function ProtectedRoute({ allowedRoles }: { allowedRoles?: string[] }) {
   const authContext = useAuth()
   const location = useLocation()
 
@@ -34,6 +34,12 @@ export function ProtectedRoute() {
   // Guard: Protect against redirection loops verifying if target is already login
   if (!user && location.pathname !== '/login') {
     return <Navigate to="/login" state={{ from: location }} replace />
+  }
+
+  if (user && allowedRoles && !allowedRoles.includes(user.role)) {
+    if (user.role === 'admin') return <Navigate to="/admin" replace />
+    if (user.role === 'broker') return <Navigate to="/broker" replace />
+    return <Navigate to="/login" replace />
   }
 
   // Ensure routing works seamlessly mapping directly to the layout components via Outlet

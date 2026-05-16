@@ -5,43 +5,82 @@ import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { useAuth } from '@/providers/AppProviders'
+import { useToast } from '@/hooks/use-toast'
 
 export default function Login() {
   const [showPassword, setShowPassword] = useState(false)
+  const [isRegister, setIsRegister] = useState(false)
+
+  const [name, setName] = useState('')
+  const [email, setEmail] = useState('')
+  const [password, setPassword] = useState('')
+
   const navigate = useNavigate()
   const location = useLocation()
   const authContext = useAuth()
+  const { toast } = useToast()
 
-  const handleLogin = (e: React.FormEvent) => {
+  const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault()
 
-    if (authContext) {
-      authContext.login({
-        id: '1',
-        email: 'admin@imobiliaria.com',
-        name: 'Administrador',
-        role: 'admin',
-      })
-    }
+    if (!authContext) return
 
-    const from = location.state?.from?.pathname || '/admin'
-    navigate(from, { replace: true })
+    if (isRegister) {
+      const newUser = authContext.register(name, email, password)
+      toast({ title: 'Conta criada com sucesso!' })
+      navigate(newUser.role === 'admin' ? '/admin' : '/broker', { replace: true })
+    } else {
+      const user = authContext.login(email, password)
+      if (user) {
+        const from = location.state?.from?.pathname
+        if (from && from !== '/' && from !== '/login') {
+          navigate(from, { replace: true })
+        } else {
+          navigate(user.role === 'admin' ? '/admin' : '/broker', { replace: true })
+        }
+      } else {
+        toast({ title: 'Credenciais inválidas', variant: 'destructive' })
+      }
+    }
   }
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-slate-50 p-4">
       <div className="bg-white p-8 rounded-2xl shadow-sm border border-slate-200 max-w-sm w-full animate-in fade-in slide-in-from-bottom-4">
         <h1 className="text-2xl font-black text-slate-800 mb-2 text-center">
-          Login Administrativo
+          {isRegister ? 'Criar Conta' : 'Acesso ao Sistema'}
         </h1>
         <p className="text-slate-500 text-sm text-center mb-6">
-          Acesse o dashboard de gestão de corretores e equipes.
+          {isRegister
+            ? 'Crie sua conta para acessar o painel.'
+            : 'Acesse o dashboard de gestão de corretores e equipes.'}
         </p>
 
-        <form onSubmit={handleLogin} className="space-y-4">
+        <form onSubmit={handleSubmit} className="space-y-4">
+          {isRegister && (
+            <div className="space-y-2">
+              <Label htmlFor="name">Nome Completo</Label>
+              <Input
+                id="name"
+                type="text"
+                placeholder="Seu nome"
+                required
+                value={name}
+                onChange={(e) => setName(e.target.value)}
+              />
+            </div>
+          )}
+
           <div className="space-y-2">
-            <Label htmlFor="email">E-mail ou Usuário</Label>
-            <Input id="email" type="text" placeholder="admin@imobiliaria.com" required />
+            <Label htmlFor="email">E-mail</Label>
+            <Input
+              id="email"
+              type="email"
+              placeholder="exemplo@imobiliaria.com"
+              required
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+            />
           </div>
 
           <div className="space-y-2">
@@ -52,6 +91,8 @@ export default function Login() {
                 type={showPassword ? 'text' : 'password'}
                 placeholder="••••••••"
                 required
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
               />
               <button
                 type="button"
@@ -68,8 +109,18 @@ export default function Login() {
             type="submit"
             className="w-full mt-6 bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 rounded-xl shadow-sm transition-all duration-200"
           >
-            Acessar Dashboard
+            {isRegister ? 'Criar Conta' : 'Acessar Dashboard'}
           </Button>
+
+          <div className="text-center mt-4">
+            <button
+              type="button"
+              onClick={() => setIsRegister(!isRegister)}
+              className="text-sm text-blue-600 hover:text-blue-800 font-medium transition-colors"
+            >
+              {isRegister ? 'Já tenho uma conta. Fazer login.' : 'Não tem uma conta? Criar Conta.'}
+            </button>
+          </div>
         </form>
       </div>
     </div>

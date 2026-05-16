@@ -1,6 +1,5 @@
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom'
 import Login from './pages/auth/Login'
-import Dashboard from './pages/Dashboard'
 import { AdminLayout } from './pages/admin/AdminLayout'
 import AdminDashboard from './pages/admin/Dashboard'
 import AdminBrokers from './pages/admin/Brokers'
@@ -8,6 +7,9 @@ import AdminTeams from './pages/admin/Teams'
 import AdminReports from './pages/admin/Reports'
 import AdminIntegrations from './pages/admin/Integrations'
 import AdminEngine from './pages/admin/Engine'
+import AdminUsers from './pages/admin/Users'
+import BrokerDashboard from './pages/broker/Dashboard'
+import TvDashboard from './pages/tv/Dashboard'
 import { AuthProvider } from './providers/AppProviders'
 import { ProtectedRoute } from './components/ProtectedRoute'
 
@@ -16,13 +18,15 @@ const App = () => {
     <AuthProvider>
       <BrowserRouter>
         <Routes>
-          <Route path="/" element={<Navigate to="/dashboard" replace />} />
+          <Route path="/" element={<Navigate to="/login" replace />} />
           <Route path="/login" element={<Login />} />
+          <Route path="/tv-dashboard" element={<TvDashboard />} />
 
-          <Route element={<ProtectedRoute />}>
-            <Route path="/dashboard" element={<Dashboard />} />
+          {/* Admin Routes */}
+          <Route element={<ProtectedRoute allowedRoles={['admin']} />}>
             <Route path="/admin" element={<AdminLayout />}>
               <Route index element={<AdminDashboard />} />
+              <Route path="usuarios" element={<AdminUsers />} />
               <Route path="corretores" element={<AdminBrokers />} />
               <Route path="equipes" element={<AdminTeams />} />
               <Route path="relatorios" element={<AdminReports />} />
@@ -45,6 +49,11 @@ const App = () => {
                 }
               />
             </Route>
+          </Route>
+
+          {/* Broker Routes */}
+          <Route element={<ProtectedRoute allowedRoles={['broker']} />}>
+            <Route path="/broker" element={<BrokerDashboard />} />
           </Route>
         </Routes>
       </BrowserRouter>
