@@ -35,7 +35,7 @@ import {
   SelectValue,
 } from '@/components/ui/select'
 import { useToast } from '@/hooks/use-toast'
-import { initialBrokers } from '@/lib/mock-data'
+import { initialBrokers, initialTeams } from '@/lib/mock-data'
 import { BrokerSheet } from '@/components/admin/BrokerSheet'
 
 export default function AdminBrokers() {
@@ -57,12 +57,16 @@ export default function AdminBrokers() {
   const handleSaveNew = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault()
     const formData = new FormData(e.currentTarget)
+    const teamIdStr = formData.get('teamId') as string
+    const team = initialTeams.find((t) => t.id.toString() === teamIdStr)
     const newBroker = {
       id: brokers.length + 1,
       name: formData.get('name') as string,
       email: formData.get('email') as string,
       phone: formData.get('phone') as string,
       region: formData.get('region') as string,
+      teamId: team ? team.id : null,
+      teamName: team ? team.name : 'Sem Equipe',
       position: 'Júnior',
       leads: 0,
       sales: 0,
@@ -171,6 +175,23 @@ export default function AdminBrokers() {
                       </SelectContent>
                     </Select>
                   </div>
+                  <div className="grid grid-cols-4 items-center gap-4">
+                    <Label htmlFor="teamId" className="text-right">
+                      Equipe
+                    </Label>
+                    <Select name="teamId" required>
+                      <SelectTrigger className="col-span-3">
+                        <SelectValue placeholder="Selecione a equipe" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        {initialTeams.map((team) => (
+                          <SelectItem key={team.id} value={team.id.toString()}>
+                            {team.name}
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                  </div>
                 </div>
                 <DialogFooter>
                   <Button type="submit">Salvar Registro</Button>
@@ -195,7 +216,7 @@ export default function AdminBrokers() {
             <TableHeader className="bg-slate-50">
               <TableRow>
                 <TableHead>Nome</TableHead>
-                <TableHead>Unidade</TableHead>
+                <TableHead>Equipe / Unidade</TableHead>
                 <TableHead className="text-right">Leads Gerados</TableHead>
                 <TableHead className="text-right">Imóveis Vendidos</TableHead>
                 <TableHead className="text-right">Taxa Conversão</TableHead>
@@ -210,8 +231,11 @@ export default function AdminBrokers() {
                   className={!broker.active ? 'opacity-60 bg-slate-50/50' : ''}
                 >
                   <TableCell className="font-medium whitespace-nowrap">{broker.name}</TableCell>
-                  <TableCell className="text-slate-500 text-sm whitespace-nowrap">
-                    {broker.region}
+                  <TableCell className="whitespace-nowrap">
+                    <div className="flex flex-col">
+                      <span className="text-sm font-medium text-slate-700">{broker.teamName}</span>
+                      <span className="text-xs text-slate-500">{broker.region}</span>
+                    </div>
                   </TableCell>
                   <TableCell className="text-right">{broker.leads}</TableCell>
                   <TableCell className="text-right">{broker.sales}</TableCell>
@@ -239,7 +263,7 @@ export default function AdminBrokers() {
                         </DropdownMenuItem>
                         <DropdownMenuSeparator />
                         <DropdownMenuItem onClick={() => toggleActive(broker.id)}>
-                          {broker.active ? 'Inativar Conta' : 'Ativar Conta'}
+                          {broker.active ? 'Inativar Corretor' : 'Ativar Corretor'}
                         </DropdownMenuItem>
                       </DropdownMenuContent>
                     </DropdownMenu>

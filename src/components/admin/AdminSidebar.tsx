@@ -1,6 +1,7 @@
 import {
   LayoutDashboard,
   Users,
+  UsersRound,
   Link as LinkIcon,
   Bell,
   BarChart3,
@@ -23,6 +24,7 @@ import {
 const navigation = [
   { name: 'Dashboard', href: '/admin', icon: LayoutDashboard },
   { name: 'Corretores', href: '/admin/corretores', icon: Users },
+  { name: 'Equipes', href: '/admin/equipes', icon: UsersRound },
   { name: 'Integrações', href: '/admin/integracoes', icon: LinkIcon },
   { name: 'Alertas', href: '/admin/alertas', icon: Bell },
   { name: 'Relatórios', href: '/admin/relatorios', icon: BarChart3 },

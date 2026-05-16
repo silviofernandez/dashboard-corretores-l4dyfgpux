@@ -26,10 +26,15 @@ export function BrokerSheet({
       <SheetContent className="w-full sm:max-w-md overflow-y-auto">
         <SheetHeader className="mb-6">
           <SheetTitle className="text-2xl">{selectedBroker.name}</SheetTitle>
-          <SheetDescription className="flex items-center gap-2 mt-1">
+          <SheetDescription className="flex items-center gap-2 mt-2 flex-wrap">
             <Badge variant={selectedBroker.active ? 'default' : 'secondary'}>
               {selectedBroker.active ? 'Ativo' : 'Inativo'}
             </Badge>
+            {selectedBroker.teamName && (
+              <Badge variant="outline" className="bg-blue-50/50 text-blue-700 border-blue-200">
+                {selectedBroker.teamName}
+              </Badge>
+            )}
             <Badge variant="outline">{selectedBroker.position}</Badge>
             <Badge variant="outline">{selectedBroker.region}</Badge>
           </SheetDescription>
@@ -72,57 +77,62 @@ export function BrokerSheet({
             </Card>
           </div>
 
-          <Card className="border-indigo-100 bg-indigo-50/50 shadow-sm">
-            <CardHeader className="pb-2">
-              <CardTitle className="text-sm font-semibold flex items-center gap-2 text-indigo-900">
-                <Brain className="w-4 h-4 text-indigo-600" />
-                Diagnóstico IA de Performance
-              </CardTitle>
-            </CardHeader>
-            <CardContent className="space-y-4 text-sm text-indigo-800/90 leading-relaxed">
-              <p>{selectedBroker.aiAnalysis}</p>
+          <div className="space-y-4 pt-2">
+            <h3 className="text-lg font-bold text-slate-800 flex items-center gap-2">
+              <Brain className="w-5 h-5 text-indigo-600" /> Módulo de Insights IA
+            </h3>
 
-              {selectedBroker.deficiencies && selectedBroker.deficiencies.length > 0 && (
-                <div className="mt-4 pt-4 border-t border-indigo-200/50">
-                  <h4 className="font-semibold text-indigo-900 mb-2 flex items-center gap-1">
-                    <Activity className="w-4 h-4 text-red-500" /> Deficiências Identificadas
-                  </h4>
-                  <ul className="list-disc pl-5 space-y-1 text-indigo-800/80">
-                    {selectedBroker.deficiencies.map((def: string, idx: number) => (
-                      <li key={idx}>{def}</li>
-                    ))}
-                  </ul>
-                </div>
-              )}
-            </CardContent>
-          </Card>
-
-          {selectedBroker.trainingRecommendation && (
-            <Card className="border-amber-200 bg-amber-50 shadow-sm animate-in fade-in slide-in-from-bottom-2">
+            <Card className="border-indigo-100 bg-indigo-50/50 shadow-sm">
               <CardHeader className="pb-2">
-                <CardTitle className="text-sm font-semibold flex items-center gap-2 text-amber-900">
-                  <GraduationCap className="w-4 h-4 text-amber-600" />
-                  Treinamento Recomendado
+                <CardTitle className="text-sm font-semibold flex items-center gap-2 text-indigo-900">
+                  Análise e Diagnóstico
                 </CardTitle>
               </CardHeader>
-              <CardContent className="space-y-3">
-                <p className="text-sm text-amber-800/80">
-                  Com base nas deficiências detectadas, sugerimos a seguinte capacitação:
-                </p>
-                <div className="flex items-start gap-3 p-3 bg-white/70 rounded-md border border-amber-200">
-                  <span className="text-sm font-medium text-amber-950">
-                    {selectedBroker.trainingRecommendation}
-                  </span>
-                </div>
-                <Button
-                  variant="outline"
-                  className="w-full mt-2 bg-white text-amber-700 hover:text-amber-800 hover:bg-amber-100 border-amber-300"
-                >
-                  Agendar Treinamento
-                </Button>
+              <CardContent className="space-y-4 text-sm text-indigo-900/90 leading-relaxed">
+                <p>{selectedBroker.aiAnalysis}</p>
+
+                {selectedBroker.deficiencies && selectedBroker.deficiencies.length > 0 && (
+                  <div className="mt-4 pt-4 border-t border-indigo-200/50">
+                    <h4 className="font-bold text-red-700 mb-2 flex items-center gap-1">
+                      <Activity className="w-4 h-4" /> Pontos Fracos Identificados
+                    </h4>
+                    <ul className="list-disc pl-5 space-y-1 text-red-800/90">
+                      {selectedBroker.deficiencies.map((def: string, idx: number) => (
+                        <li key={idx}>{def}</li>
+                      ))}
+                    </ul>
+                  </div>
+                )}
               </CardContent>
             </Card>
-          )}
+
+            {selectedBroker.trainingRecommendation && (
+              <Card className="border-amber-200 bg-amber-50 shadow-sm animate-in fade-in slide-in-from-bottom-2">
+                <CardHeader className="pb-2">
+                  <CardTitle className="text-sm font-bold flex items-center gap-2 text-amber-900">
+                    <GraduationCap className="w-4 h-4 text-amber-600" />
+                    Sugestões de Treinamento
+                  </CardTitle>
+                </CardHeader>
+                <CardContent className="space-y-3">
+                  <p className="text-sm text-amber-900/80">
+                    Ação recomendada para melhorar os resultados do corretor:
+                  </p>
+                  <div className="flex items-start gap-3 p-3 bg-white/80 rounded-md border border-amber-200 shadow-sm">
+                    <span className="text-sm font-semibold text-amber-950">
+                      {selectedBroker.trainingRecommendation}
+                    </span>
+                  </div>
+                  <Button
+                    variant="default"
+                    className="w-full mt-2 bg-amber-600 hover:bg-amber-700 text-white border-none shadow-sm font-medium transition-colors"
+                  >
+                    Agendar Treinamento
+                  </Button>
+                </CardContent>
+              </Card>
+            )}
+          </div>
         </div>
       </SheetContent>
     </Sheet>

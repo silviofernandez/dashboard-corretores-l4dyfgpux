@@ -14,8 +14,9 @@ export function AdminLayout() {
             <Database className="h-4 w-4 text-indigo-600" />
             <AlertTitle>Modo de Demonstração (Sem Banco de Dados)</AlertTitle>
             <AlertDescription>
-              Este sistema está utilizando dados mockados. Recomendamos conectar um banco de dados
-              como Supabase ou Skip Cloud para armazenamento permanente dos relatórios e corretores.
+              Este sistema está utilizando dados locais temporários. Para armazenamento permanente
+              das equipes, corretores e do histórico de performance, conecte um banco de dados como
+              Supabase ou Skip Cloud (atualmente os dados serão reiniciados ao recarregar a página).
             </AlertDescription>
           </Alert>
         </div>

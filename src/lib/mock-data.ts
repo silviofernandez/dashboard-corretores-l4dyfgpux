@@ -1,3 +1,9 @@
+export const initialTeams = [
+  { id: 1, name: 'Equipe Alfa' },
+  { id: 2, name: 'Equipe Beta' },
+  { id: 3, name: 'Equipe Gama' },
+]
+
 export const initialBrokers = [
   {
     id: 1,
@@ -5,6 +11,8 @@ export const initialBrokers = [
     email: 'ricardo.mendes@imob.com',
     phone: '(11) 98765-4321',
     region: 'Unidade Sul',
+    teamId: 1,
+    teamName: 'Equipe Alfa',
     position: 'Sênior',
     leads: 150,
     sales: 45,
@@ -22,6 +30,8 @@ export const initialBrokers = [
     email: 'ana.silva@imob.com',
     phone: '(11) 97777-6666',
     region: 'Unidade Norte',
+    teamId: 1,
+    teamName: 'Equipe Alfa',
     position: 'Pleno',
     leads: 200,
     sales: 42,
@@ -39,6 +49,8 @@ export const initialBrokers = [
     email: 'carlos.edu@imob.com',
     phone: '(11) 96666-5555',
     region: 'Unidade Leste',
+    teamId: 2,
+    teamName: 'Equipe Beta',
     position: 'Júnior',
     leads: 120,
     sales: 12,
@@ -59,6 +71,8 @@ export const initialBrokers = [
     email: 'mariana.costa@imob.com',
     phone: '(11) 95555-4444',
     region: 'Unidade Oeste',
+    teamId: 3,
+    teamName: 'Equipe Gama',
     position: 'Sênior',
     leads: 140,
     sales: 35,
