@@ -19,6 +19,8 @@ const AdminAlerts = lazy(() => import('./pages/admin/Alerts'))
 const AdminReports = lazy(() => import('./pages/admin/Reports'))
 const AdminSettings = lazy(() => import('./pages/admin/Settings'))
 const AdminEngine = lazy(() => import('./pages/admin/Engine'))
+const AdminGamification = lazy(() => import('./pages/admin/Gamification'))
+const BrokerGamification = lazy(() => import('./pages/broker/Gamification'))
 
 // ONLY IMPORT AND RENDER WORKING PAGES, NEVER ADD PLACEHOLDER COMPONENTS OR PAGES IN THIS FILE
 // AVOID REMOVING ANY CONTEXT PROVIDERS FROM THIS FILE (e.g. TooltipProvider, Toaster, Sonner)
@@ -64,6 +66,7 @@ const App = () => {
               <Route path="relatorios" element={<AdminReports />} />
               <Route path="configuracoes" element={<AdminSettings />} />
               <Route path="motor" element={<AdminEngine />} />
+              <Route path="gamificacao" element={<AdminGamification />} />
             </Route>
 
             {/* Broker App Routes */}
@@ -86,6 +89,7 @@ const App = () => {
                   </div>
                 }
               />
+              <Route path="gamificacao" element={<BrokerGamification />} />
               <Route
                 path="configuracoes"
                 element={

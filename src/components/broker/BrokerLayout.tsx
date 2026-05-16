@@ -1,5 +1,5 @@
 import { Outlet, Link, useLocation } from 'react-router-dom'
-import { LayoutDashboard, Trophy, Bell, User, Settings, LogOut, Hexagon } from 'lucide-react'
+import { LayoutDashboard, Trophy, Award, Bell, User, Settings, LogOut, Hexagon } from 'lucide-react'
 import {
   Sidebar,
   SidebarContent,
@@ -23,7 +23,7 @@ import { cn } from '@/lib/utils'
 const NAV_ITEMS = [
   { title: 'Dashboard', icon: LayoutDashboard, url: '/dashboard' },
   { title: 'Ranking', icon: Trophy, url: '/dashboard/historico' },
-  { title: 'Alertas', icon: Bell, url: '/dashboard/metas' },
+  { title: 'Conquistas', icon: Award, url: '/dashboard/gamificacao' },
   { title: 'Perfil', icon: User, url: '/dashboard/configuracoes' },
 ]
 
