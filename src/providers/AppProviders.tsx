@@ -1,27 +1,52 @@
-import React, { createContext, useContext, useState, useEffect } from 'react'
+import { createContext, useContext, useState, useEffect, ReactNode } from 'react'
 
-interface AuthContextType {
-  user: any | null
-  loading: boolean
+interface User {
+  id: string
+  email: string
+  name: string
+  role: string
 }
 
-const AuthContext = createContext<AuthContextType>({ user: null, loading: true })
+interface AuthContextType {
+  user: User | null
+  loading: boolean
+  login: (user: User) => void
+  logout: () => void
+}
 
-export const useAuth = () => useContext(AuthContext)
+const AuthContext = createContext<AuthContextType | null>(null)
 
-export function AppProviders({ children }: { children: React.ReactNode }) {
-  const [user, setUser] = useState<{ name: string; role: string } | null>(null)
+export function AuthProvider({ children }: { children: ReactNode }) {
+  const [user, setUser] = useState<User | null>(null)
   const [loading, setLoading] = useState(true)
 
   useEffect(() => {
-    // Simulate safe resolution to prevent blocking renders
-    const timer = setTimeout(() => {
-      setUser({ name: 'Ana Paula Silva', role: 'broker' })
-      setLoading(false)
-    }, 100)
-
-    return () => clearTimeout(timer)
+    const storedUser = localStorage.getItem('user')
+    if (storedUser) {
+      try {
+        setUser(JSON.parse(storedUser))
+      } catch (e) {
+        localStorage.removeItem('user')
+      }
+    }
+    setLoading(false)
   }, [])
 
-  return <AuthContext.Provider value={{ user, loading }}>{children}</AuthContext.Provider>
+  const login = (userData: User) => {
+    setUser(userData)
+    localStorage.setItem('user', JSON.stringify(userData))
+  }
+
+  const logout = () => {
+    setUser(null)
+    localStorage.removeItem('user')
+  }
+
+  return (
+    <AuthContext.Provider value={{ user, loading, login, logout }}>{children}</AuthContext.Provider>
+  )
+}
+
+export function useAuth() {
+  return useContext(AuthContext)
 }

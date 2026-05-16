@@ -8,10 +8,12 @@ import {
   Settings,
   BrainCircuit,
 } from 'lucide-react'
-import { Link, useLocation } from 'react-router-dom'
+import { Link, useLocation, useNavigate } from 'react-router-dom'
+import { LogOut } from 'lucide-react'
 import {
   Sidebar,
   SidebarContent,
+  SidebarFooter,
   SidebarGroup,
   SidebarGroupContent,
   SidebarGroupLabel,
@@ -20,6 +22,7 @@ import {
   SidebarMenuButton,
   SidebarMenuItem,
 } from '@/components/ui/sidebar'
+import { useAuth } from '@/providers/AppProviders'
 
 const navigation = [
   { name: 'Dashboard', href: '/admin', icon: LayoutDashboard },
@@ -34,6 +37,15 @@ const navigation = [
 
 export function AdminSidebar() {
   const location = useLocation()
+  const navigate = useNavigate()
+  const authContext = useAuth()
+
+  const handleLogout = () => {
+    if (authContext) {
+      authContext.logout()
+    }
+    navigate('/login')
+  }
 
   return (
     <Sidebar>
@@ -68,6 +80,15 @@ export function AdminSidebar() {
           </SidebarGroupContent>
         </SidebarGroup>
       </SidebarContent>
+      <SidebarFooter className="p-4 border-t border-sidebar-border">
+        <SidebarMenuButton
+          onClick={handleLogout}
+          className="w-full justify-start text-red-600 hover:text-red-700 hover:bg-red-50"
+        >
+          <LogOut className="w-4 h-4 mr-2" />
+          <span className="font-medium">Sair do Sistema</span>
+        </SidebarMenuButton>
+      </SidebarFooter>
     </Sidebar>
   )
 }

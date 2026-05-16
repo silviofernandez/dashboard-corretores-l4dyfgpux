@@ -1,18 +1,31 @@
 import { useState } from 'react'
 import { Eye, EyeOff } from 'lucide-react'
-import { useNavigate } from 'react-router-dom'
+import { useNavigate, useLocation } from 'react-router-dom'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
+import { useAuth } from '@/providers/AppProviders'
 
 export default function Login() {
   const [showPassword, setShowPassword] = useState(false)
   const navigate = useNavigate()
+  const location = useLocation()
+  const authContext = useAuth()
 
   const handleLogin = (e: React.FormEvent) => {
     e.preventDefault()
-    // Simulated authentication success
-    navigate('/admin')
+
+    if (authContext) {
+      authContext.login({
+        id: '1',
+        email: 'admin@imobiliaria.com',
+        name: 'Administrador',
+        role: 'admin',
+      })
+    }
+
+    const from = location.state?.from?.pathname || '/admin'
+    navigate(from, { replace: true })
   }
 
   return (
