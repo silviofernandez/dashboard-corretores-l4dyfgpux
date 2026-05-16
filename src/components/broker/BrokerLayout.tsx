@@ -1,5 +1,5 @@
 import { Outlet, Link, useLocation } from 'react-router-dom'
-import { LayoutDashboard, History, Target, Settings, LogOut, Hexagon } from 'lucide-react'
+import { LayoutDashboard, Trophy, Bell, User, Settings, LogOut, Hexagon } from 'lucide-react'
 import {
   Sidebar,
   SidebarContent,
@@ -16,16 +16,20 @@ import {
 } from '@/components/ui/sidebar'
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
 import { useEffect } from 'react'
+import { useIsMobile } from '@/hooks/use-mobile'
+import { OfflineBanner } from './OfflineBanner'
+import { cn } from '@/lib/utils'
 
 const NAV_ITEMS = [
   { title: 'Dashboard', icon: LayoutDashboard, url: '/dashboard' },
-  { title: 'Histórico', icon: History, url: '/dashboard/historico' },
-  { title: 'Metas', icon: Target, url: '/dashboard/metas' },
-  { title: 'Configurações', icon: Settings, url: '/dashboard/configuracoes' },
+  { title: 'Ranking', icon: Trophy, url: '/dashboard/historico' },
+  { title: 'Alertas', icon: Bell, url: '/dashboard/metas' },
+  { title: 'Perfil', icon: User, url: '/dashboard/configuracoes' },
 ]
 
 export function BrokerLayout() {
   const location = useLocation()
+  const isMobile = useIsMobile()
 
   useEffect(() => {
     document.documentElement.classList.remove('dark')
@@ -33,7 +37,10 @@ export function BrokerLayout() {
 
   return (
     <SidebarProvider>
-      <Sidebar variant="inset" className="border-r border-slate-200 shadow-sm bg-white">
+      <Sidebar
+        variant="inset"
+        className="hidden md:flex border-r border-slate-200 shadow-sm bg-white z-20"
+      >
         <SidebarHeader className="flex items-center justify-center py-6">
           <div className="flex items-center gap-2 font-black text-2xl text-blue-600">
             <Hexagon className="w-8 h-8 fill-blue-600/10" />
@@ -79,9 +86,19 @@ export function BrokerLayout() {
         </SidebarFooter>
       </Sidebar>
 
-      <SidebarInset className="bg-slate-50/50 min-h-screen flex flex-col">
-        <header className="flex h-20 shrink-0 items-center gap-4 border-b border-slate-200 bg-white/80 backdrop-blur-md px-6 shadow-sm sticky top-0 z-10">
-          <SidebarTrigger className="text-slate-500 hover:text-slate-800 bg-slate-100 hover:bg-slate-200 rounded-lg p-2" />
+      <SidebarInset className="bg-slate-50/50 min-h-screen flex flex-col pb-16 md:pb-0 relative">
+        <OfflineBanner />
+        <header className="flex h-16 md:h-20 shrink-0 items-center gap-4 border-b border-slate-200 bg-white/80 backdrop-blur-md px-4 md:px-6 shadow-sm sticky top-0 z-10">
+          <SidebarTrigger
+            className="text-slate-500 hover:text-slate-800 bg-slate-100 hover:bg-slate-200 rounded-lg p-2 hidden md:flex min-w-[44px] min-h-[44px] items-center justify-center"
+            aria-label="Alternar menu lateral"
+          />
+          {isMobile && (
+            <div className="flex items-center gap-2 font-black text-xl text-blue-600">
+              <Hexagon className="w-6 h-6 fill-blue-600/10" />
+              <span>BrokerTop</span>
+            </div>
+          )}
           <div className="flex-1" />
           <div className="flex items-center gap-4">
             <div className="text-right">
@@ -101,9 +118,37 @@ export function BrokerLayout() {
             </Avatar>
           </div>
         </header>
-        <main className="flex-1 p-4 md:p-6 lg:p-8 max-w-7xl mx-auto w-full animate-fade-in-up">
+        <main
+          className="flex-1 p-4 md:p-6 lg:p-8 max-w-7xl mx-auto w-full animate-fade-in-up overflow-x-hidden"
+          role="main"
+        >
           <Outlet />
         </main>
+
+        {isMobile && (
+          <nav
+            className="fixed bottom-0 left-0 right-0 h-16 bg-white border-t border-slate-200 flex items-center justify-around px-2 z-50 safe-area-bottom pb-env shadow-[0_-4px_20px_rgba(0,0,0,0.05)]"
+            aria-label="Navegação Principal"
+          >
+            {NAV_ITEMS.map((item) => (
+              <Link
+                key={item.title}
+                to={item.url}
+                className={cn(
+                  'flex flex-col items-center justify-center w-full h-full min-w-[44px] min-h-[44px] space-y-1 transition-colors tap-highlight-transparent',
+                  location.pathname === item.url
+                    ? 'text-blue-600'
+                    : 'text-slate-500 hover:text-slate-800',
+                )}
+                aria-label={item.title}
+                aria-current={location.pathname === item.url ? 'page' : undefined}
+              >
+                <item.icon className="w-5 h-5" aria-hidden="true" />
+                <span className="text-[10px] font-bold">{item.title}</span>
+              </Link>
+            ))}
+          </nav>
+        )}
       </SidebarInset>
     </SidebarProvider>
   )
