@@ -1,4 +1,12 @@
-import { LayoutDashboard, Users, Link as LinkIcon, Bell, BarChart3, Settings } from 'lucide-react'
+import {
+  LayoutDashboard,
+  Users,
+  Link as LinkIcon,
+  Bell,
+  BarChart3,
+  Settings,
+  BrainCircuit,
+} from 'lucide-react'
 import { Link, useLocation } from 'react-router-dom'
 import {
   Sidebar,
@@ -18,6 +26,7 @@ const navigation = [
   { name: 'Integrações', href: '/admin/integracoes', icon: LinkIcon },
   { name: 'Alertas', href: '/admin/alertas', icon: Bell },
   { name: 'Relatórios', href: '/admin/relatorios', icon: BarChart3 },
+  { name: 'Motor IA', href: '/admin/motor', icon: BrainCircuit },
   { name: 'Configurações', href: '/admin/configuracoes', icon: Settings },
 ]
 

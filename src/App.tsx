@@ -16,6 +16,7 @@ import AdminIntegrations from './pages/admin/Integrations'
 import AdminAlerts from './pages/admin/Alerts'
 import AdminReports from './pages/admin/Reports'
 import AdminSettings from './pages/admin/Settings'
+import AdminEngine from './pages/admin/Engine'
 
 // ONLY IMPORT AND RENDER WORKING PAGES, NEVER ADD PLACEHOLDER COMPONENTS OR PAGES IN THIS FILE
 // AVOID REMOVING ANY CONTEXT PROVIDERS FROM THIS FILE (e.g. TooltipProvider, Toaster, Sonner)
@@ -38,6 +39,7 @@ const App = () => (
           <Route path="alertas" element={<AdminAlerts />} />
           <Route path="relatorios" element={<AdminReports />} />
           <Route path="configuracoes" element={<AdminSettings />} />
+          <Route path="motor" element={<AdminEngine />} />
         </Route>
 
         {/* Broker App Routes */}
