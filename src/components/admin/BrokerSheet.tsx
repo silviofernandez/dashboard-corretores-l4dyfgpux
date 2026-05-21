@@ -155,9 +155,6 @@ export function BrokerSheet({ selectedBroker, isOpen, onOpenChange, onUpdateBrok
   const [note, setNote] = useState('')
   const [selectedTrainingId, setSelectedTrainingId] = useState('')
 
-  const b = selectedBroker
-  if (!b) return null
-
   const multiplier = useMemo(() => {
     switch (period) {
       case 'weekly':
@@ -174,6 +171,9 @@ export function BrokerSheet({ selectedBroker, isOpen, onOpenChange, onUpdateBrok
         return 1
     }
   }, [period])
+
+  const b = selectedBroker
+  if (!b) return null
 
   const getVal = (val: number) => Math.round(val * multiplier)
   const targetObj = compareTarget === 'avg' ? TEAM_AVG_MONTHLY : TOP_PERFORMER_MONTHLY
