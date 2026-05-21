@@ -69,13 +69,22 @@ export default function AdminBrokers() {
       teamName: team ? team.name : 'Sem Equipe',
       position: 'Júnior',
       leads: 0,
+      interactions: 0,
+      visits: 0,
+      foldersUploaded: 0,
+      foldersRejected: 0,
+      purchaseConditions: 0,
       sales: 0,
       conversionRate: 0,
       vgv: 0,
+      vgc: 0,
+      netCommission: 0,
       active: true,
       aiAnalysis: 'Novo corretor. Coletando dados para análise de performance...',
       deficiencies: [],
       trainingRecommendation: 'Onboarding Inicial de Vendas',
+      feedbacks: [],
+      assignedTrainings: [],
     }
     setBrokers([...brokers, newBroker])
     setIsDialogOpen(false)
@@ -88,6 +97,11 @@ export default function AdminBrokers() {
   const viewDetails = (broker: any) => {
     setSelectedBroker(broker)
     setIsSheetOpen(true)
+  }
+
+  const handleUpdateBroker = (updatedBroker: any) => {
+    setBrokers(brokers.map((b) => (b.id === updatedBroker.id ? updatedBroker : b)))
+    setSelectedBroker(updatedBroker)
   }
 
   const filteredBrokers = brokers.filter((b) =>
@@ -286,6 +300,7 @@ export default function AdminBrokers() {
         selectedBroker={selectedBroker}
         isOpen={isSheetOpen}
         onOpenChange={setIsSheetOpen}
+        onUpdateBroker={handleUpdateBroker}
       />
     </div>
   )
