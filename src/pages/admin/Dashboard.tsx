@@ -1,7 +1,16 @@
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card'
 import { ChartContainer, ChartTooltip, ChartTooltipContent } from '@/components/ui/chart'
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, ResponsiveContainer } from 'recharts'
-import { AlertCircle, CheckCircle2, TrendingUp, Users, DollarSign } from 'lucide-react'
+import {
+  AlertCircle,
+  CheckCircle2,
+  TrendingUp,
+  TrendingDown,
+  Users,
+  DollarSign,
+  ArrowRight,
+} from 'lucide-react'
+import { Link } from 'react-router-dom'
 
 const data = [
   { month: 'Jan', sales: 4000000 },
@@ -43,16 +52,23 @@ export default function AdminDashboard() {
           </CardContent>
         </Card>
 
-        <Card className="bg-gradient-to-br from-amber-50 to-white shadow-sm sm:col-span-2 md:col-span-1">
-          <CardHeader className="flex flex-row items-center justify-between pb-2">
-            <CardTitle className="text-sm font-medium text-slate-600">Alertas Pendentes</CardTitle>
-            <AlertCircle className="w-4 h-4 text-amber-600" />
-          </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold">5 Ações</div>
-            <p className="text-xs text-slate-500 mt-1">Requerem atenção imediata</p>
-          </CardContent>
-        </Card>
+        <Link to="/admin/alertas" className="sm:col-span-2 md:col-span-1 block group">
+          <Card className="bg-gradient-to-br from-amber-50 to-white shadow-sm h-full transition-all duration-200 hover:shadow-md hover:border-amber-300">
+            <CardHeader className="flex flex-row items-center justify-between pb-2">
+              <CardTitle className="text-sm font-medium text-slate-600 group-hover:text-amber-700 transition-colors">
+                Alertas Pendentes
+              </CardTitle>
+              <AlertCircle className="w-4 h-4 text-amber-600" />
+            </CardHeader>
+            <CardContent>
+              <div className="text-2xl font-bold text-amber-900">5 Ações</div>
+              <p className="text-xs text-amber-700/80 mt-1 flex items-center gap-1">
+                Requerem atenção imediata{' '}
+                <ArrowRight className="w-3 h-3 opacity-0 group-hover:opacity-100 transition-opacity -ml-1 group-hover:ml-0" />
+              </p>
+            </CardContent>
+          </Card>
+        </Link>
       </div>
 
       <div className="grid gap-4 grid-cols-1 lg:grid-cols-7">
@@ -94,38 +110,64 @@ export default function AdminDashboard() {
         </Card>
 
         <Card className="lg:col-span-3 shadow-sm flex flex-col">
-          <CardHeader>
-            <CardTitle>Ações Requeridas</CardTitle>
-            <CardDescription>Tarefas priorizadas da equipe</CardDescription>
+          <CardHeader className="flex flex-row items-start justify-between pb-3">
+            <div>
+              <CardTitle>Ações Requeridas</CardTitle>
+              <CardDescription>Tarefas priorizadas da equipe</CardDescription>
+            </div>
+            <Link
+              to="/admin/alertas"
+              className="text-sm font-medium text-blue-600 hover:text-blue-800 flex items-center gap-1 bg-blue-50 px-3 py-1.5 rounded-md hover:bg-blue-100 transition-colors"
+            >
+              Ver todas
+            </Link>
           </CardHeader>
           <CardContent className="space-y-4 flex-1">
-            <div className="flex items-start gap-3 p-3 bg-red-50 text-red-900 rounded-lg border border-red-100 transition-colors hover:bg-red-100">
+            <Link
+              to="/admin/alertas"
+              className="flex items-start gap-3 p-3 bg-red-50 text-red-900 rounded-lg border border-red-100 transition-colors hover:bg-red-100 hover:border-red-200 cursor-pointer group"
+            >
               <AlertCircle className="w-5 h-5 text-red-600 mt-0.5 shrink-0" />
-              <div>
-                <p className="font-medium text-sm">Documentação Vencida</p>
+              <div className="flex-1">
+                <p className="font-medium text-sm flex items-center justify-between">
+                  Aprovação de Documento
+                  <ArrowRight className="w-3.5 h-3.5 opacity-0 group-hover:opacity-100 transition-opacity text-red-700" />
+                </p>
                 <p className="text-xs mt-1 opacity-90">
-                  Corretor: Carlos Eduardo - CRECI precisa ser renovado urgentemente.
+                  Venda de alto valor aguardando aprovação há mais de 24h.
                 </p>
               </div>
-            </div>
-            <div className="flex items-start gap-3 p-3 bg-amber-50 text-amber-900 rounded-lg border border-amber-100 transition-colors hover:bg-amber-100">
+            </Link>
+            <Link
+              to="/admin/alertas"
+              className="flex items-start gap-3 p-3 bg-amber-50 text-amber-900 rounded-lg border border-amber-100 transition-colors hover:bg-amber-100 hover:border-amber-200 cursor-pointer group"
+            >
               <AlertCircle className="w-5 h-5 text-amber-600 mt-0.5 shrink-0" />
-              <div>
-                <p className="font-medium text-sm">Treinamento Atrasado</p>
+              <div className="flex-1">
+                <p className="font-medium text-sm flex items-center justify-between">
+                  Lead sem Interação
+                  <ArrowRight className="w-3.5 h-3.5 opacity-0 group-hover:opacity-100 transition-opacity text-amber-700" />
+                </p>
                 <p className="text-xs mt-1 opacity-90">
-                  3 corretores não concluíram o módulo "Técnicas de Fechamento".
+                  Lead de alto potencial sem contato há mais de 48 horas.
                 </p>
               </div>
-            </div>
-            <div className="flex items-start gap-3 p-3 bg-blue-50 text-blue-900 rounded-lg border border-blue-100 transition-colors hover:bg-blue-100">
-              <CheckCircle2 className="w-5 h-5 text-blue-600 mt-0.5 shrink-0" />
-              <div>
-                <p className="font-medium text-sm">Meta Atingida</p>
+            </Link>
+            <Link
+              to="/admin/alertas"
+              className="flex items-start gap-3 p-3 bg-red-50 text-red-900 rounded-lg border border-red-100 transition-colors hover:bg-red-100 hover:border-red-200 cursor-pointer group"
+            >
+              <TrendingDown className="w-5 h-5 text-red-600 mt-0.5 shrink-0" />
+              <div className="flex-1">
+                <p className="font-medium text-sm flex items-center justify-between">
+                  Conversão Baixa
+                  <ArrowRight className="w-3.5 h-3.5 opacity-0 group-hover:opacity-100 transition-opacity text-red-700" />
+                </p>
                 <p className="text-xs mt-1 opacity-90">
-                  Aprovar promoção para status 3x1 da corretora Ana Paula Silva.
+                  Corretor apresentou queda drástica na taxa de conversão.
                 </p>
               </div>
-            </div>
+            </Link>
           </CardContent>
         </Card>
       </div>

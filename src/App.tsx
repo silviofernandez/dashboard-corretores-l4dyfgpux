@@ -9,6 +9,7 @@ import AdminIntegrations from './pages/admin/Integrations'
 import AdminEngine from './pages/admin/Engine'
 import AdminUsers from './pages/admin/Users'
 import AdminTrainings from './pages/admin/Trainings'
+import AdminAlerts from './pages/admin/Alerts'
 import BrokerDashboard from './pages/broker/Dashboard'
 import TvDashboard from './pages/tv/Dashboard'
 import { AuthProvider } from './providers/AppProviders'
@@ -38,14 +39,7 @@ const App = () => {
               <Route path="relatorios" element={<AdminReports />} />
               <Route path="integracoes" element={<AdminIntegrations />} />
               <Route path="motor" element={<AdminEngine />} />
-              <Route
-                path="alertas"
-                element={
-                  <div className="p-8 text-slate-500 font-medium animate-in fade-in">
-                    Módulo de Alertas em breve...
-                  </div>
-                }
-              />
+              <Route path="alertas" element={<AdminAlerts />} />
               <Route
                 path="configuracoes"
                 element={
